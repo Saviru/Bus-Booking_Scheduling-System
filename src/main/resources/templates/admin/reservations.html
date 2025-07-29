@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservations - Bus Ticket System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <h1>View Reservations</h1>
+            <nav>
+                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                <a th:href="@{/admin/routes}">Manage Routes</a>
+                <a th:href="@{/admin/schedules}">Manage Schedules</a>
+                <a th:href="@{/admin/reservations}">View Reservations</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </div>
+
+        <div class="content">
+            <h2>All Reservations</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Passenger Name</th>
+                            <th>Route</th>
+                            <th>Departure Time</th>
+                            <th>Price</th>
+                            <th>Booking Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="reservation : ${reservations}">
+                            <td th:text="${reservation.id}"></td>
+                            <td th:text="${reservation.user.username}"></td>
+                            <td th:text="${reservation.passengerName}"></td>
+                            <td th:text="${reservation.schedule.busRoute.routeName}"></td>
+                            <td th:text="${reservation.schedule.departureTime}"></td>
+                            <td th:text="${reservation.schedule.busRoute.price}"></td>
+                            <td th:text="${#temporals.format(reservation.bookingTime, 'yyyy-MM-dd HH:mm')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

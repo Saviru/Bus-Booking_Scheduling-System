@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Schedule - Bus Ticket System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <h1>Select Schedule</h1>
+            <nav>
+                <a th:href="@{/customer/dashboard}">Dashboard</a>
+                <a th:href="@{/customer/book}">Book Ticket</a>
+                <a th:href="@{/customer/my-tickets}">My Tickets</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </div>
+
+        <div class="content">
+            <h2>Available Schedules for <span th:text="${route.routeName}"></span></h2>
+            <div th:if="${schedules.empty}">
+                <p>No schedules available for this route. Please select another route.</p>
+                <a th:href="@{/customer/book}" class="btn">Back to Routes</a>
+            </div>
+            <div th:if="${!schedules.empty}">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Departure Time</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="schedule : ${schedules}">
+                                <td th:text="${schedule.departureTime}"></td>
+                                <td th:text="${route.price}"></td>
+                                <td>
+                                    <button class="btn" th:onclick="'showBookingForm(' + ${schedule.id} + ')'">Book Now</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="bookingForm" class="booking-form" style="display: none;">
+                <h3>Passenger Information</h3>
+                <form th:action="@{/customer/book}" method="post">
+                    <input type="hidden" id="scheduleId" name="scheduleId">
+                    <div class="form-group">
+                        <label for="passengerName">Passenger Name:</label>
+                        <input type="text" id="passengerName" name="passengerName" required>
+                    </div>
+                    <button type="submit" class="btn">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showBookingForm(scheduleId) {
+            document.getElementById('scheduleId').value = scheduleId;
+            document.getElementById('bookingForm').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

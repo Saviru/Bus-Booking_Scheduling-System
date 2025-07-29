@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Bus Ticket System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <h1>Admin Dashboard</h1>
+            <nav>
+                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                <a th:href="@{/admin/routes}">Manage Routes</a>
+                <a th:href="@{/admin/schedules}">Manage Schedules</a>
+                <a th:href="@{/admin/reservations}">View Reservations</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </div>
+
+        <div class="dashboard-section">
+            <h2>Overview</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <h3>Total Routes</h3>
+                    <p th:text="${routes.size()}">0</p>
+                </div>
+                <div class="stat-item">
+                    <h3>Total Schedules</h3>
+                    <p th:text="${schedules.size()}">0</p>
+                </div>
+                <div class="stat-item">
+                    <h3>Total Reservations</h3>
+                    <p th:text="${reservations.size()}">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

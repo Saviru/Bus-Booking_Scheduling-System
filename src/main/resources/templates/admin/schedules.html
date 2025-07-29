@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Schedules - Bus Ticket System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <h1>Manage Schedules</h1>
+            <nav>
+                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                <a th:href="@{/admin/routes}">Manage Routes</a>
+                <a th:href="@{/admin/schedules}">Manage Schedules</a>
+                <a th:href="@{/admin/reservations}">View Reservations</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </div>
+
+        <div class="content">
+            <h2>Add New Schedule</h2>
+            <form th:action="@{/admin/schedules/add}" method="post">
+                <div class="form-group">
+                    <label for="routeId">Route:</label>
+                    <select id="routeId" name="routeId" required>
+                        <option value="">Select Route</option>
+                        <option th:each="route : ${routes}" th:value="${route.id}" th:text="${route.routeName}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="departureTime">Departure Time:</label>
+                    <input type="time" id="departureTime" name="departureTime" required>
+                </div>
+                <button type="submit" class="btn">Add Schedule</button>
+            </form>
+
+            <h2>Existing Schedules</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Route</th>
+                            <th>Departure Time</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="schedule : ${schedules}">
+                            <td th:text="${schedule.id}"></td>
+                            <td th:text="${schedule.busRoute.routeName}"></td>
+                            <td th:text="${schedule.departureTime}"></td>
+                            <td th:text="${schedule.busRoute.price}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

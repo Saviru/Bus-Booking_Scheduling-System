@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Ticket - Bus Ticket System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <h1>Book Ticket</h1>
+            <nav>
+                <a th:href="@{/customer/dashboard}">Dashboard</a>
+                <a th:href="@{/customer/book}">Book Ticket</a>
+                <a th:href="@{/customer/my-tickets}">My Tickets</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </div>
+
+        <div class="content">
+            <h2>Select a Route</h2>
+            <div th:if="${routes.empty}">
+                <p>No routes available. Please check back later.</p>
+            </div>
+            <div th:if="${!routes.empty}" class="routes-container">
+                <div th:each="route : ${routes}" class="route-card">
+                    <h3 th:text="${route.routeName}"></h3>
+                    <p>Price: $<span th:text="${route.price}"></span></p>
+                    <a th:href="@{/customer/schedules(routeId=${route.id})}" class="btn">Select Schedules</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

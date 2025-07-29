@@ -1,0 +1,213 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+h2 {
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.alert {
+    padding: 10px;
+    background-color: #f44336;
+    color: white;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.success {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.navbar {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.navbar h1 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.navbar nav {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.navbar a {
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: #555;
+    border-radius: 4px;
+}
+
+.content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-container {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f2f2f2;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.stat-item {
+    flex: 1;
+    background-color: white;
+    padding: 20px;
+    border-radius: 4px;
+    text-align: center;
+    margin-right: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item:last-child {
+    margin-right: 0;
+}
+
+.stat-item h3 {
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.stat-item p {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.routes-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.route-card {
+    background-color: white;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: calc(33.33% - 10px);
+}
+
+.route-card h3 {
+    margin-bottom: 10px;
+}
+
+.route-card p {
+    margin-bottom: 15px;
+}
+
+.booking-form {
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 20px;
+    border: 1px solid #ddd;
+}
+
+.welcome-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .stats {
+        flex-direction: column;
+    }
+    
+    .stat-item {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .route-card {
+        width: 100%;
+    }
+}
