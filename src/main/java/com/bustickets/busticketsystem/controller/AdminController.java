@@ -72,18 +72,51 @@ public class AdminController {
     }
 
     @PostMapping("/schedules/add")
-    public String addSchedule(@RequestParam Long routeId, @RequestParam String departureTime, HttpSession session) {
+    public String addSchedule(@RequestParam Long routeId, @RequestParam String departureTime,
+                              @RequestParam String status, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"ADMIN".equals(user.getRole())) {
             return "redirect:/login";
         }
-        
+
         BusRoute busRoute = busRouteService.getRouteById(routeId).orElse(null);
         if (busRoute != null) {
             LocalTime time = LocalTime.parse(departureTime);
             BusSchedule schedule = new BusSchedule();
             schedule.setBusRoute(busRoute);
             schedule.setDepartureTime(time);
+            schedule.setStatus(status);
+            busScheduleService.saveSchedule(schedule);
+        }
+        return "redirect:/admin/schedules";
+    }
+
+    @GetMapping("/schedules/update-status/{id}")
+    public String updateStatusForm(@PathVariable Long id, HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || !"ADMIN".equals(user.getRole())) {
+            return "redirect:/login";
+        }
+
+        BusSchedule schedule = busScheduleService.getScheduleById(id).orElse(null);
+        if (schedule == null) {
+            return "redirect:/admin/schedules";
+        }
+
+        model.addAttribute("schedule", schedule);
+        return "admin/update-status";
+    }
+
+    @PostMapping("/schedules/update-status")
+    public String updateStatus(@RequestParam Long scheduleId, @RequestParam String status, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || !"ADMIN".equals(user.getRole())) {
+            return "redirect:/login";
+        }
+
+        BusSchedule schedule = busScheduleService.getScheduleById(scheduleId).orElse(null);
+        if (schedule != null) {
+            schedule.setStatus(status);
             busScheduleService.saveSchedule(schedule);
         }
         return "redirect:/admin/schedules";

@@ -15,11 +15,14 @@ public class BusSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne
     @JoinColumn(name = "route_id", nullable = false)
     private BusRoute busRoute;
-    
+
     @Column(nullable = false)
     private LocalTime departureTime;
+
+    @Column(nullable = false)
+    private String status = "NORMAL"; // Default status: NORMAL, DELAYED, CANCELLED
 }
