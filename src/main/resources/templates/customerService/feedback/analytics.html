@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Feedback Analytics</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Feedback Analytics</h1>
+    
+    <div>
+        <a href="/customer-service/feedback">Back to Feedback List</a>
+    </div>
+    
+    <div>
+        <h2>Overall Statistics</h2>
+        <h3>Average Rating: <span th:text="${#numbers.formatDecimal(overallAverage != null ? overallAverage : 0, 1, 2)}"></span> / 5</h3>
+    </div>
+    
+    <div>
+        <h2>Rating Distribution</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Rating</th>
+                    <th>Count</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="entry : ${distribution}">
+                    <td th:text="${entry.key + ' Star' + (entry.key > 1 ? 's' : '')}"></td>
+                    <td th:text="${entry.value}"></td>
+                    <td th:with="total=${distribution.values().stream().mapToLong(v -> v).sum()}">
+                        <span th:if="${total > 0}" th:text="${#numbers.formatDecimal((entry.value * 100.0 / total), 1, 1) + '%'}"></span>
+                        <span th:if="${total == 0}">0%</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td th:text="${distribution.values().stream().mapToLong(v -> v).sum()}"></td>
+                    <td>100%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

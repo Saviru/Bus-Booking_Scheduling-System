@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Backup Configurations</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Backup Configurations</h1>
+    
+    <div th:if="${successMessage}" th:text="${successMessage}"></div>
+    
+    <div>
+        <a href="/">Home</a> | 
+        <a href="/it-support/backup/configs/create">Create New Configuration</a> |
+        <a href="/it-support/backup/history">View Backup History</a> |
+        <a href="/it-support/backup/manual">Manual Backup</a>
+    </div>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Storage Location</th>
+                <th>Schedule</th>
+                <th>Retention (days)</th>
+                <th>Status</th>
+                <th>Last Modified</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${configs.empty}">
+                <td colspan="8">No backup configurations found</td>
+            </tr>
+            <tr th:each="config : ${configs}">
+                <td th:text="${config.name}"></td>
+                <td th:text="${config.backupType}"></td>
+                <td th:text="${config.storageLocation}"></td>
+                <td th:text="${config.scheduledTime}"></td>
+                <td th:text="${config.retentionDays}"></td>
+                <td th:text="${config.active ? 'Active' : 'Inactive'}"></td>
+                <td th:text="${config.lastModified}"></td>
+                <td>
+                    <a th:href="@{/it-support/backup/configs/{id}(id=${config.id})}">View</a> |
+                    <a th:href="@{/it-support/backup/configs/{id}/edit(id=${config.id})}">Edit</a> |
+                    <a th:href="@{/it-support/backup/configs/{id}/delete(id=${config.id})}"
+                       onclick="return confirm('Are you sure you want to delete this configuration?')">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

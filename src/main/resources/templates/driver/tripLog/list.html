@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Trip Logs</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Trip Logs</h1>
+    
+    <div th:if="${successMessage}" th:text="${successMessage}"></div>
+    
+    <div>
+        <a href="/">Home</a> | 
+        <a href="/driver/trip-logs/create">Log New Trip</a> |
+        <a href="/driver/trip-logs/search">Advanced Search</a>
+    </div>
+    
+    <div>
+        <h3>Filter Trip Logs</h3>
+        <form action="/driver/trip-logs" method="get">
+            <div>
+                <label for="driverId">Driver ID:</label>
+                <input type="text" id="driverId" name="driverId">
+                <button type="submit">Filter</button>
+            </div>
+        </form>
+        
+        <form action="/driver/trip-logs" method="get">
+            <div>
+                <label for="routeId">Route ID:</label>
+                <input type="text" id="routeId" name="routeId">
+                <button type="submit">Filter</button>
+            </div>
+        </form>
+        
+        <form action="/driver/trip-logs" method="get">
+            <div>
+                <label for="vehicleNumber">Vehicle Number:</label>
+                <input type="text" id="vehicleNumber" name="vehicleNumber">
+                <button type="submit">Filter</button>
+            </div>
+        </form>
+        
+        <form action="/driver/trip-logs" method="get">
+            <div>
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="">All</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="CANCELED">Canceled</option>
+                    <option value="DELAYED">Delayed</option>
+                </select>
+                <button type="submit">Filter</button>
+            </div>
+        </form>
+        
+        <form action="/driver/trip-logs" method="get">
+            <div>
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" th:value="${today}">
+                <button type="submit">Filter</button>
+            </div>
+        </form>
+    </div>
+    
+    <div th:if="${filterType != null}">
+        <p>Filtering by <span th:text="${filterType}"></span>: <span th:text="${filterValue}"></span></p>
+        <a href="/driver/trip-logs">Clear Filter</a>
+    </div>
+    
+    <div th:if="${driverId != null && !driverId.empty}">
+        <a th:href="@{/driver/trip-logs/performance(driverId=${driverId})}">View Performance Metrics</a>
+    </div>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Driver</th>
+                <th>Vehicle</th>
+                <th>Route</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Duration</th>
+                <th>Passengers</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${tripLogs.empty}">
+                <td colspan="9">No trip logs found</td>
+            </tr>
+            <tr th:each="tripLog : ${tripLogs}">
+                <td th:text="${tripLog.driverName + (tripLog.driverId != null ? ' (' + tripLog.driverId + ')' : '')}"></td>
+                <td th:text="${tripLog.vehicleNumber}"></td>
+                <td th:text="${tripLog.routeId + (tripLog.scheduleId != null ? ' / ' + tripLog.scheduleId : '')}"></td>
+                <td th:text="${tripLog.startTime}"></td>
+                <td th:text="${tripLog.endTime}"></td>
+                <td th:text="${tripLog.tripDurationMinutes + ' mins'}"></td>
+                <td th:text="${tripLog.passengerCount}"></td>
+                <td th:text="${tripLog.status}"></td>
+                <td>
+                    <a th:href="@{/driver/trip-logs/{id}(id=${tripLog.id})}">View</a> |
+                    <a th:href="@{/driver/trip-logs/{id}/edit(id=${tripLog.id})}">Edit</a> |
+                    <a th:href="@{/driver/trip-logs/{id}/delete(id=${tripLog.id})}"
+                       onclick="return confirm('Are you sure you want to delete this trip log?')">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

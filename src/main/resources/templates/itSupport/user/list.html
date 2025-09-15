@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Management</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>User Management</h1>
+    
+    <div th:if="${successMessage}" th:text="${successMessage}"></div>
+    
+    <div>
+        <a href="/">Home</a> | 
+        <a href="/it-support/users/create">Create New User</a> | 
+        <a href="/it-support/users/roles">Manage Roles</a> | 
+        <a href="/it-support/users/login-report">Login Reports</a>
+    </div>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Status</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${users.empty}">
+                <td colspan="7">No users found</td>
+            </tr>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.fullName}"></td>
+                <td th:text="${user.email}"></td>
+                <td>
+                    <span th:each="role, roleStat : ${user.roles}">
+                        <span th:text="${role.name}"></span>
+                        <span th:if="${!roleStat.last}">, </span>
+                    </span>
+                </td>
+                <td>
+                    <span th:if="${user.active && !user.locked}">Active</span>
+                    <span th:if="${!user.active}">Inactive</span>
+                    <span th:if="${user.locked}">Locked</span>
+                </td>
+                <td th:text="${user.lastLogin}"></td>
+                <td>
+                    <a th:href="@{/it-support/users/{id}(id=${user.id})}">View</a> |
+                    <a th:href="@{/it-support/users/{id}/edit(id=${user.id})}">Edit</a> |
+                    <a th:href="@{/it-support/users/{id}/toggle-active(id=${user.id})}"
+                       th:text="${user.active ? 'Deactivate' : 'Activate'}"></a> |
+                    <a th:href="@{/it-support/users/{id}/toggle-lock(id=${user.id})}"
+                       th:text="${user.locked ? 'Unlock' : 'Lock'}"></a> |
+                    <a th:href="@{/it-support/users/{id}/reset-password(id=${user.id})}">Reset Password</a> |
+                    <a th:href="@{/it-support/users/{id}/login-history(id=${user.id})}">Login History</a> |
+                    <a th:href="@{/it-support/users/{id}/delete(id=${user.id})}"
+                       onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

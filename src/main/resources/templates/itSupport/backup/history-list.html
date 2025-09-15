@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Backup History</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Backup History</h1>
+    
+    <div th:if="${successMessage}" th:text="${successMessage}"></div>
+    
+    <div>
+        <a href="/">Home</a> | 
+        <a href="/it-support/backup/configs">Backup Configurations</a> |
+        <a href="/it-support/backup/manual">Manual Backup</a>
+    </div>
+    
+    <div>
+        <h3>Search/Filter</h3>
+        <form action="/it-support/backup/history/search" method="get">
+            <div>
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="">All</option>
+                    <option value="SUCCESS" th:selected="${selectedStatus == 'SUCCESS'}">Success</option>
+                    <option value="FAILED" th:selected="${selectedStatus == 'FAILED'}">Failed</option>
+                    <option value="IN_PROGRESS" th:selected="${selectedStatus == 'IN_PROGRESS'}">In Progress</option>
+                </select>
+                <button type="submit">Filter by Status</button>
+            </div>
+        </form>
+        
+        <form action="/it-support/backup/history/search" method="get">
+            <div>
+                <label for="startDate">From:</label>
+                <input type="date" id="startDate" name="startDate" th:value="${startDate}">
+                
+                <label for="endDate">To:</label>
+                <input type="date" id="endDate" name="endDate" th:value="${endDate}">
+                
+                <button type="submit">Search by Date Range</button>
+            </div>
+        </form>
+    </div>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Configuration</th>
+                <th>Date/Time</th>
+                <th>Status</th>
+                <th>Size (MB)</th>
+                <th>Initiated By</th>
+                <th>Duration (min)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${history.empty}">
+                <td colspan="7">No backup history found</td>
+            </tr>
+            <tr th:each="backup : ${history}">
+                <td th:text="${backup.backupConfig.name}"></td>
+                <td th:text="${backup.startTime}"></td>
+                <td th:text="${backup.status}"></td>
+                <td th:text="${backup.fileSizeMb != null ? #numbers.formatDecimal(backup.fileSizeMb, 1, 2) : 'N/A'}"></td>
+                <td th:text="${backup.initiatedBy + (backup.user != null ? ' by ' + backup.user.fullName : '')}"></td>
+                <td th:text="${backup.durationMinutes != null ? backup.durationMinutes : 'In progress'}"></td>
+                <td>
+                    <a th:href="@{/it-support/backup/history/{id}(id=${backup.id})}">View</a> |
+                    <a th:href="@{/it-support/backup/history/{id}/delete(id=${backup.id})}"
+                       onclick="return confirm('Are you sure you want to delete this backup record?')">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

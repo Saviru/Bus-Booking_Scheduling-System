@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login Report</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Login Activity Report</h1>
+    
+    <div>
+        <a href="/it-support/users">Back to User Management</a>
+    </div>
+    
+    <form action="/it-support/users/generate-login-report" method="get">
+        <div>
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate" required>
+        </div>
+        
+        <div>
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate" required>
+        </div>
+        
+        <div>
+            <button type="submit">Generate Report</button>
+        </div>
+    </form>
+</body>
+</html>

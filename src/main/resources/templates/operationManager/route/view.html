@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Route</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Route Details</h1>
+    
+    <div>
+        <a href="/routes">Back to Routes</a> |
+        <a th:href="@{/routes/{id}/edit(id=${route.id})}">Edit Route</a>
+    </div>
+    
+    <div>
+        <h3>Route ID</h3>
+        <p th:text="${route.routeId}"></p>
+    </div>
+    
+    <div>
+        <h3>Origin</h3>
+        <p th:text="${route.origin}"></p>
+    </div>
+    
+    <div>
+        <h3>Destination</h3>
+        <p th:text="${route.destination}"></p>
+    </div>
+    
+    <div>
+        <h3>Stops</h3>
+        <p th:text="${route.stops != null and !route.stops.isEmpty() ? route.stops : 'No stops'}"></p>
+    </div>
+    
+    <div>
+        <h3>Distance</h3>
+        <p th:text="${route.distance} + ' km'"></p>
+    </div>
+    
+    <div>
+        <h3>Duration</h3>
+        <p th:text="${route.durationMinutes} + ' minutes'"></p>
+    </div>
+    
+    <div>
+        <h3>Status</h3>
+        <p th:text="${route.status}"></p>
+    </div>
+</body>
+</html>

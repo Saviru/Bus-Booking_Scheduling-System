@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Schedule Report Results</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Schedule Report Results</h1>
+    
+    <div>
+        <a href="/schedules">Back to Schedules</a> |
+        <a href="/schedules/report">New Report</a>
+    </div>
+    
+    <div>
+        <h3>Report Parameters</h3>
+        <p>Period: <span th:text="${startDate}"></span> to <span th:text="${endDate}"></span></p>
+        <p th:if="${route != null}">Route: <span th:text="${route.routeId + ' (' + route.origin + ' - ' + route.destination + ')'}"></span></p>
+        <p th:if="${route == null}">Route: All Routes</p>
+    </div>
+    
+    <div>
+        <h3>Results</h3>
+        <p>Total Schedules: <span th:text="${schedules.size()}"></span></p>
+    </div>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Schedule ID</th>
+                <th>Route</th>
+                <th>Date</th>
+                <th>Departure</th>
+                <th>Arrival</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${schedules.empty}">
+                <td colspan="6">No schedules found for the specified criteria</td>
+            </tr>
+            <tr th:each="schedule : ${schedules}">
+                <td th:text="${schedule.scheduleId}"></td>
+                <td th:text="${schedule.route != null ? schedule.route.routeId + ' (' + schedule.route.origin + ' - ' + schedule.route.destination + ')' : 'N/A'}"></td>
+                <td th:text="${schedule.scheduleDate}"></td>
+                <td th:text="${schedule.departureTime}"></td>
+                <td th:text="${schedule.arrivalTime}"></td>
+                <td th:text="${schedule.status}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

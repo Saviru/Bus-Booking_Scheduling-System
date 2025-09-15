@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login History</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Login History</h1>
+    
+    <div>
+        <a href="/it-support/users">Back to User Management</a> |
+        <a th:href="@{/it-support/users/{id}(id=${user.id})}">Back to User Details</a>
+    </div>
+    
+    <div>
+        <h3>Login history for user:</h3>
+        <p th:text="${user.username + ' (' + user.fullName + ')'}"></p>
+    </div>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Date/Time</th>
+                <th>IP Address</th>
+                <th>User Agent</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${loginHistory.empty}">
+                <td colspan="4">No login history found</td>
+            </tr>
+            <tr th:each="entry : ${loginHistory}">
+                <td th:text="${entry.loginTime}"></td>
+                <td th:text="${entry.ipAddress != null ? entry.ipAddress : 'N/A'}"></td>
+                <td th:text="${entry.userAgent != null ? entry.userAgent : 'N/A'}"></td>
+                <td th:text="${entry.status}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

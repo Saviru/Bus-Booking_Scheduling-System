@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Driver Performance Metrics</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Driver Performance Metrics</h1>
+    
+    <div>
+        <a href="/driver/trip-logs">Back to Trip Logs</a> |
+        <a th:href="@{/driver/trip-logs(driverId=${driverId})}">View All Trips for This Driver</a>
+    </div>
+    
+    <div>
+        <h2>Performance Summary for <span th:text="${driverName != null ? driverName : driverId}"></span></h2>
+        
+        <div th:if="${metrics != null}">
+            <table border="1">
+                <tr>
+                    <th>Total Trips</th>
+                    <td th:text="${metrics.totalTrips}"></td>
+                </tr>
+                <tr>
+                    <th>Completed Trips</th>
+                    <td th:text="${metrics.completedTrips}"></td>
+                </tr>
+                <tr>
+                    <th>Total Passengers Carried</th>
+                    <td th:text="${metrics.totalPassengers}"></td>
+                </tr>
+                <tr>
+                    <th>Average Passengers Per Trip</th>
+                    <td th:text="${#numbers.formatDecimal(metrics.averagePassengersPerTrip, 1, 2)}"></td>
+                </tr>
+                <tr>
+                    <th>Total Driving Time</th>
+                    <td>
+                        <span th:text="${metrics.totalDrivingMinutes}"></span> minutes 
+                        (<span th:text="${#numbers.formatDecimal(metrics.totalDrivingMinutes / 60.0, 1, 2)}"></span> hours)
+                    </td>
+                </tr>
+                <tr>
+                    <th>Average Trip Duration</th>
+                    <td th:text="${#numbers.formatDecimal(metrics.averageTripDurationMinutes, 1, 2) + ' minutes'}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <div>
+        <h2>Recent Trip Logs</h2>
+        
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Route</th>
+                    <th>Duration</th>
+                    <th>Passengers</th>
+                    <th>Status</th>
+                    <th>Issues</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${tripLogs.empty}">
+                    <td colspan="6">No trip logs found</td>
+                </tr>
+                <tr th:each="tripLog : ${tripLogs}">
+                    <td th:text="${tripLog.startTime}"></td>
+                    <td th:text="${tripLog.routeId}"></td>
+                    <td th:text="${tripLog.tripDurationMinutes + ' mins'}"></td>
+                    <td th:text="${tripLog.passengerCount}"></td>
+                    <td th:text="${tripLog.status}"></td>
+                    <td th:text="${tripLog.issuesEncountered != null && !tripLog.issuesEncountered.empty ? 'Yes' : 'No'}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

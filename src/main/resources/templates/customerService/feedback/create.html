@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Record New Feedback</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Record New Feedback</h1>
+    
+    <div>
+        <a href="/customer-service/feedback">Back to Feedback List</a>
+    </div>
+    
+    <form th:action="@{/customer-service/feedback/create}" th:object="${feedback}" method="post">
+        <h3>Customer Information</h3>
+        
+        <div>
+            <label for="customerName">Customer Name:</label>
+            <input type="text" id="customerName" th:field="*{customerName}" required>
+            <span th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></span>
+        </div>
+        
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" th:field="*{email}">
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        </div>
+        
+        <div>
+            <label for="contactNumber">Contact Number:</label>
+            <input type="text" id="contactNumber" th:field="*{contactNumber}">
+        </div>
+        
+        <h3>Feedback Details</h3>
+        
+        <div>
+            <label for="rating">Rating (1-5 stars):</label>
+            <select id="rating" th:field="*{rating}" required>
+                <option value="">Select Rating</option>
+                <option value="5">5 - Excellent</option>
+                <option value="4">4 - Good</option>
+                <option value="3">3 - Average</option>
+                <option value="2">2 - Poor</option>
+                <option value="1">1 - Very Poor</option>
+            </select>
+            <span th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></span>
+        </div>
+        
+        <div>
+            <label for="feedbackType">Feedback Type:</label>
+            <select id="feedbackType" th:field="*{feedbackType}" required>
+                <option value="GENERAL">General Feedback</option>
+                <option value="SUGGESTION">Suggestion</option>
+                <option value="COMPLIMENT">Compliment</option>
+                <option value="COMPLAINT">Complaint</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="serviceDate">Service Date/Time:</label>
+            <input type="datetime-local" id="serviceDate" th:field="*{serviceDate}">
+        </div>
+        
+        <div>
+            <label for="routeId">Route ID (if applicable):</label>
+            <input type="text" id="routeId" th:field="*{routeId}">
+        </div>
+        
+        <div>
+            <label for="scheduleId">Schedule ID (if applicable):</label>
+            <input type="text" id="scheduleId" th:field="*{scheduleId}">
+        </div>
+        
+        <div>
+            <label for="comments">Comments:</label>
+            <textarea id="comments" th:field="*{comments}" rows="5" cols="50"></textarea>
+        </div>
+        
+        <div>
+            <label for="tags">Tags (comma-separated):</label>
+            <input type="text" id="tags" th:field="*{tags}" placeholder="e.g., service, cleanliness, punctuality">
+        </div>
+        
+        <div>
+            <button type="submit">Submit Feedback</button>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Vehicle Condition Report</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Vehicle Condition Report Details</h1>
+    
+    <div th:if="${successMessage}" th:text="${successMessage}"></div>
+    
+    <div>
+        <a href="/driver/vehicle-reports">Back to Reports</a> |
+        <a th:href="@{/driver/vehicle-reports/{id}/edit(id=${report.id})}">Edit Report</a> |
+        <a th:href="@{/driver/vehicle-reports/{id}/update-status(id=${report.id})}">Update Status</a> |
+        <a th:href="@{/driver/vehicle-reports/vehicle-history/{vehicleNumber}(vehicleNumber=${report.vehicleNumber})}">View Vehicle History</a>
+    </div>
+    
+    <div>
+        <h3>Report Information</h3>
+        <table border="1">
+            <tr>
+                <th>Report Date</th>
+                <td th:text="${report.reportDate}"></td>
+            </tr>
+            <tr>
+                <th>Report Type</th>
+                <td th:text="${report.reportType}"></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td th:text="${report.status}"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div>
+        <h3>Driver & Vehicle Information</h3>
+        <table border="1">
+            <tr>
+                <th>Vehicle Number</th>
+                <td th:text="${report.vehicleNumber}"></td>
+            </tr>
+            <tr>
+                <th>Driver Name</th>
+                <td th:text="${report.driverName}"></td>
+            </tr>
+            <tr th:if="${report.driverId != null}">
+                <th>Driver ID</th>
+                <td th:text="${report.driverId}"></td>
+            </tr>
+            <tr th:if="${report.odometerReading != null}">
+                <th>Odometer Reading</th>
+                <td th:text="${report.odometerReading + ' km'}"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div>
+        <h3>Vehicle Condition</h3>
+        <table border="1">
+            <tr>
+                <th>Brakes</th>
+                <td th:text="${report.brakesCondition}" th:style="${report.brakesCondition == 'NEEDS_ATTENTION' || report.brakesCondition == 'POOR' ? 'color: red;' : ''}"></td>
+            </tr>
+            <tr>
+                <th>Lights</th>
+                <td th:text="${report.lightsCondition}" th:style="${report.lightsCondition == 'NEEDS_ATTENTION' || report.lightsCondition == 'POOR' ? 'color: red;' : ''}"></td>
+            </tr>
+            <tr>
+                <th>Tires</th>
+                <td th:text="${report.tiresCondition}" th:style="${report.tiresCondition == 'NEEDS_ATTENTION' || report.tiresCondition == 'POOR' ? 'color: red;' : ''}"></td>
+            </tr>
+            <tr th:if="${report.exteriorCondition != null}">
+                <th>Exterior</th>
+                <td th:text="${report.exteriorCondition}" th:style="${report.exteriorCondition == 'NEEDS_ATTENTION' || report.exteriorCondition == 'POOR' ? 'color: red;' : ''}"></td>
+            </tr>
+            <tr th:if="${report.interiorCondition != null}">
+                <th>Interior</th>
+                <td th:text="${report.interiorCondition}" th:style="${report.interiorCondition == 'NEEDS_ATTENTION' || report.interiorCondition == 'POOR' ? 'color: red;' : ''}"></td>
+            </tr>
+            <tr th:if="${report.fuelLevel != null}">
+                <th>Fuel Level</th>
+                <td th:text="${report.fuelLevel}"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div th:if="${report.details != null && !report.details.empty}">
+        <h3>Additional Details</h3>
+        <p th:text="${report.details}"></p>
+    </div>
+    
+    <div th:if="${report.status != 'PENDING'}">
+        <h3>Review Information</h3>
+        <table border="1">
+            <tr th:if="${report.reviewedBy != null}">
+                <th>Reviewed By</th>
+                <td th:text="${report.reviewedBy}"></td>
+            </tr>
+            <tr th:if="${report.reviewedDate != null}">
+                <th>Review Date</th>
+                <td th:text="${report.reviewedDate}"></td>
+            </tr>
+            <tr th:if="${report.maintenanceNotes != null && !report.maintenanceNotes.empty}">
+                <th>Maintenance Notes</th>
+                <td th:text="${report.maintenanceNotes}"></td>
+            </tr>
+            <tr th:if="${report.followUpAction != null && !report.followUpAction.empty}">
+                <th>Follow-up Action</th>
+                <td th:text="${report.followUpAction}"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div>
+        <h3>System Information</h3>
+        <table border="1">
+            <tr>
+                <th>Created</th>
+                <td th:text="${report.createdAt}"></td>
+            </tr>
+            <tr>
+                <th>Last Updated</th>
+                <td th:text="${report.updatedAt}"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

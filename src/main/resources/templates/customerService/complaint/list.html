@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Complaints Management</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Complaints Management</h1>
+    
+    <div th:if="${successMessage}" th:text="${successMessage}"></div>
+    
+    <div>
+        <a href="/">Home</a> | 
+        <a href="/customer-service/complaints/create">Log New Complaint</a> |
+        <a href="/customer-service/complaints/search">Advanced Search</a>
+    </div>
+    
+    <div>
+        <h3>Filter Complaints</h3>
+        <form action="/customer-service/complaints" method="get">
+            <div>
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="">All</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="IN_PROGRESS">In Progress</option>
+                    <option value="RESOLVED">Resolved</option>
+                    <option value="CLOSED">Closed</option>
+                </select>
+                <button type="submit">Filter</button>
+            </div>
+        </form>
+        
+        <form action="/customer-service/complaints" method="get">
+            <div>
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    <option value="">All</option>
+                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"></option>
+                </select>
+                <button type="submit">Filter</button>
+            </div>
+        </form>
+        
+        <form action="/customer-service/complaints" method="get">
+            <div>
+                <label for="customerName">Customer Name:</label>
+                <input type="text" id="customerName" name="customerName">
+                <button type="submit">Search</button>
+            </div>
+        </form>
+        
+        <form action="/customer-service/complaints" method="get">
+            <div>
+                <label for="priority">Priority:</label>
+                <select id="priority" name="priority">
+                    <option value="">All</option>
+                    <option value="LOW">Low</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HIGH">High</option>
+                    <option value="URGENT">Urgent</option>
+                </select>
+                <button type="submit">Filter</button>
+            </div>
+        </form>
+    </div>
+    
+    <div th:if="${filterType != null}">
+        <p>Filtering by <span th:text="${filterType}"></span>: <span th:text="${filterValue}"></span></p>
+        <a href="/customer-service/complaints">Clear Filter</a>
+    </div>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Reference</th>
+                <th>Customer</th>
+                <th>Category</th>
+                <th>Incident Date</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Assigned To</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${complaints.empty}">
+                <td colspan="8">No complaints found</td>
+            </tr>
+            <tr th:each="complaint : ${complaints}">
+                <td th:text="${complaint.referenceNumber}"></td>
+                <td th:text="${complaint.customerName}"></td>
+                <td th:text="${complaint.category}"></td>
+                <td th:text="${complaint.incidentDate}"></td>
+                <td th:text="${complaint.status}"></td>
+                <td th:text="${complaint.priority}"></td>
+                <td th:text="${complaint.assignedTo != null ? complaint.assignedTo : 'Unassigned'}"></td>
+                <td>
+                    <a th:href="@{/customer-service/complaints/{id}(id=${complaint.id})}">View</a> |
+                    <a th:href="@{/customer-service/complaints/{id}/edit(id=${complaint.id})}">Edit</a> |
+                    <a th:href="@{/customer-service/complaints/{id}/update-status(id=${complaint.id})}">Update Status</a> |
+                    <a th:href="@{/customer-service/complaints/{id}/delete(id=${complaint.id})}"
+                       onclick="return confirm('Are you sure you want to delete this complaint?')">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div>
+        <h3>Maintenance</h3>
+        <form action="/customer-service/complaints/cleanup" method="get">
+            <label for="retentionDays">Remove resolved complaints older than:</label>
+            <input type="number" id="retentionDays" name="retentionDays" value="90" min="30" max="365"> days
+            <button type="submit" onclick="return confirm('This will permanently delete old resolved complaints. Continue?')">Clean Up</button>
+        </form>
+    </div>
+</body>
+</html>

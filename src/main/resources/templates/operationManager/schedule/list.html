@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Schedule Management</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Schedule Management</h1>
+    
+    <div th:if="${successMessage}" th:text="${successMessage}"></div>
+    
+    <div>
+        <a href="/">Home</a> | 
+        <a href="/schedules/create">Create New Schedule</a> |
+        <a href="/schedules/report">Generate Report</a>
+    </div>
+    
+    <div>
+        <h3>Filter Schedules</h3>
+        <form action="/schedules" method="get">
+            <div>
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="">All</option>
+                    <option value="active">Active</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <button type="submit">Filter</button>
+            </div>
+        </form>
+        
+        <form action="/schedules" method="get">
+            <div>
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" th:value="${today}">
+                <button type="submit">Filter by Date</button>
+            </div>
+        </form>
+    </div>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Schedule ID</th>
+                <th>Route</th>
+                <th>Date</th>
+                <th>Departure</th>
+                <th>Arrival</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${schedules.empty}">
+                <td colspan="7">No schedules found</td>
+            </tr>
+            <tr th:each="schedule : ${schedules}">
+                <td th:text="${schedule.scheduleId}"></td>
+                <td th:text="${schedule.route != null ? schedule.route.routeId + ' (' + schedule.route.origin + ' - ' + schedule.route.destination + ')' : 'N/A'}"></td>
+                <td th:text="${schedule.scheduleDate}"></td>
+                <td th:text="${schedule.departureTime}"></td>
+                <td th:text="${schedule.arrivalTime}"></td>
+                <td th:text="${schedule.status}"></td>
+                <td>
+                    <a th:href="@{/schedules/{id}(id=${schedule.id})}">View</a> |
+                    <a th:href="@{/schedules/{id}/edit(id=${schedule.id})}">Edit</a> |
+                    <a th:href="@{/schedules/{id}/delete(id=${schedule.id})}" 
+                       onclick="return confirm('Are you sure you want to delete this schedule?')">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

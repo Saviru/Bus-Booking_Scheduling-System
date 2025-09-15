@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit User</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Edit User</h1>
+    
+    <div>
+        <a href="/it-support/users">Back to User Management</a>
+    </div>
+    
+    <form th:action="@{/it-support/users/{id}/edit(id=${user.id})}" th:object="${user}" method="post">
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" th:field="*{username}" required>
+            <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+        </div>
+        
+        <div>
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" th:field="*{fullName}" required>
+            <span th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+        </div>
+        
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" th:field="*{email}" required>
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        </div>
+        
+        <div>
+            <label>Roles:</label><br>
+            <div th:each="role : ${allRoles}">
+                <input type="checkbox" name="roles" th:value="${role.id}" th:id="${'role-' + role.id}"
+                       th:checked="${userRoleIds.contains(role.id)}">
+                <label th:for="${'role-' + role.id}" th:text="${role.name}"></label>
+                <span th:text="${role.description != null ? '- ' + role.description : ''}"></span>
+            </div>
+        </div>
+        
+        <div>
+            <label for="active">Account Status:</label>
+            <select id="active" th:field="*{active}">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="locked">Account Lock Status:</label>
+            <select id="locked" th:field="*{locked}">
+                <option value="false">Unlocked</option>
+                <option value="true">Locked</option>
+            </select>
+        </div>
+        
+        <div>
+            <button type="submit">Update User</button>
+        </div>
+    </form>
+</body>
+</html>

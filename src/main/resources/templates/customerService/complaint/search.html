@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search Complaints</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Search Complaints</h1>
+    
+    <div>
+        <a href="/customer-service/complaints">Back to Complaints</a>
+    </div>
+    
+    <h3>Search by Reference Number</h3>
+    <form action="/customer-service/complaints/search-results" method="get">
+        <div>
+            <label for="referenceNumber">Reference Number:</label>
+            <input type="text" id="referenceNumber" name="referenceNumber">
+            <button type="submit">Search</button>
+        </div>
+    </form>
+    
+    <h3>Search by Date Range</h3>
+    <form action="/customer-service/complaints/search-results" method="get">
+        <div>
+            <label for="searchType">Search By:</label>
+            <select id="searchType" name="searchType" required>
+                <option value="incident">Incident Date</option>
+                <option value="submission">Submission Date</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate" required>
+            
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate" required>
+        </div>
+        
+        <div>
+            <button type="submit">Search</button>
+        </div>
+    </form>
+</body>
+</html>

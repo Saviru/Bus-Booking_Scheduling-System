@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Feedback</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Feedback Details</h1>
+    
+    <div th:if="${successMessage}" th:text="${successMessage}"></div>
+    
+    <div>
+        <a href="/customer-service/feedback">Back to Feedback List</a> |
+        <a th:href="@{/customer-service/feedback/{id}/edit(id=${feedback.id})}">Edit Feedback</a> |
+        <a th:if="${!feedback.reviewed}" th:href="@{/customer-service/feedback/{id}/mark-reviewed(id=${feedback.id})}">Mark as Reviewed</a> |
+        <a th:href="@{/customer-service/feedback/{id}/add-tags(id=${feedback.id})}">Add Tags</a>
+    </div>
+    
+    <div>
+        <h3>Customer Information</h3>
+        <table border="1">
+            <tr>
+                <th>Name</th>
+                <td th:text="${feedback.customerName}"></td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td th:text="${feedback.email != null ? feedback.email : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Contact Number</th>
+                <td th:text="${feedback.contactNumber != null ? feedback.contactNumber : 'N/A'}"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div>
+        <h3>Feedback Details</h3>
+        <table border="1">
+            <tr>
+                <th>Submission Date</th>
+                <td th:text="${feedback.submissionDate}"></td>
+            </tr>
+            <tr>
+                <th>Service Date</th>
+                <td th:text="${feedback.serviceDate != null ? feedback.serviceDate : 'Not specified'}"></td>
+            </tr>
+            <tr>
+                <th>Rating</th>
+                <td th:text="${feedback.rating + ' stars'}"></td>
+            </tr>
+            <tr>
+                <th>Feedback Type</th>
+                <td th:text="${feedback.feedbackType}"></td>
+            </tr>
+            <tr>
+                <th>Route ID</th>
+                <td th:text="${feedback.routeId != null ? feedback.routeId : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Schedule ID</th>
+                <td th:text="${feedback.scheduleId != null ? feedback.scheduleId : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Comments</th>
+                <td th:text="${feedback.comments != null ? feedback.comments : 'No comments provided'}"></td>
+            </tr>
+            <tr>
+                <th>Tags</th>
+                <td th:text="${feedback.tags != null ? feedback.tags : 'No tags assigned'}"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div>
+        <h3>Review Status</h3>
+        <table border="1">
+            <tr>
+                <th>Reviewed</th>
+                <td th:text="${feedback.reviewed ? 'Yes' : 'No'}"></td>
+            </tr>
+            <tr th:if="${feedback.reviewed}">
+                <th>Reviewed By</th>
+                <td th:text="${feedback.reviewedBy}"></td>
+            </tr>
+            <tr th:if="${feedback.reviewed}">
+                <th>Review Date</th>
+                <td th:text="${feedback.reviewDate}"></td>
+            </tr>
+            <tr>
+                <th>Internal Notes</th>
+                <td th:text="${feedback.internalNotes != null ? feedback.internalNotes : 'No internal notes'}"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

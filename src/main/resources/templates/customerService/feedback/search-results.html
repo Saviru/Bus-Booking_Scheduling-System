@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Feedback Search Results</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Feedback Search Results</h1>
+    
+    <div>
+        <a href="/customer-service/feedback">Back to Feedback List</a> |
+        <a href="/customer-service/feedback/search">New Search</a>
+    </div>
+    
+    <div th:if="${searchType != null}">
+        <p>Search by <span th:text="${searchType}"></span>: <span th:text="${searchValue}"></span></p>
+    </div>
+    
+    <div th:if="${feedback == null}">
+        <p>No search criteria provided. Please specify search parameters.</p>
+    </div>
+    
+    <div th:if="${feedback != null && feedback.empty}">
+        <p>No feedback found matching your search criteria.</p>
+    </div>
+    
+    <table th:if="${feedback != null && !feedback.empty}" border="1">
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Rating</th>
+                <th>Type</th>
+                <th>Tags</th>
+                <th>Reviewed</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${feedback}">
+                <td th:text="${item.customerName}"></td>
+                <td th:text="${item.submissionDate}"></td>
+                <td th:text="${item.rating + ' Stars'}"></td>
+                <td th:text="${item.feedbackType}"></td>
+                <td th:text="${item.tags != null ? item.tags : ''}"></td>
+                <td th:text="${item.reviewed ? 'Yes' : 'No'}"></td>
+                <td>
+                    <a th:href="@{/customer-service/feedback/{id}(id=${item.id})}">View</a> |
+                    <a th:href="@{/customer-service/feedback/{id}/edit(id=${item.id})}">Edit</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

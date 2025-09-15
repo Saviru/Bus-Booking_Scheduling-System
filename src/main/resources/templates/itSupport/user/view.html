@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View User</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>User Details</h1>
+    
+    <div>
+        <a href="/it-support/users">Back to User Management</a> |
+        <a th:href="@{/it-support/users/{id}/edit(id=${user.id})}">Edit User</a>
+    </div>
+    
+    <div>
+        <h3>Username</h3>
+        <p th:text="${user.username}"></p>
+    </div>
+    
+    <div>
+        <h3>Full Name</h3>
+        <p th:text="${user.fullName}"></p>
+    </div>
+    
+    <div>
+        <h3>Email</h3>
+        <p th:text="${user.email}"></p>
+    </div>
+    
+    <div>
+        <h3>Roles</h3>
+        <ul>
+            <li th:each="role : ${user.roles}" th:text="${role.name + ' - ' + role.description}"></li>
+            <li th:if="${user.roles.empty}">No roles assigned</li>
+        </ul>
+    </div>
+    
+    <div>
+        <h3>Account Status</h3>
+        <p>
+            <span th:if="${user.active && !user.locked}">Active</span>
+            <span th:if="${!user.active}">Inactive</span>
+            <span th:if="${user.locked}">Locked</span>
+        </p>
+    </div>
+    
+    <div>
+        <h3>Last Login</h3>
+        <p th:text="${user.lastLogin != null ? user.lastLogin : 'Never logged in'}"></p>
+    </div>
+    
+    <div>
+        <h3>Account Created</h3>
+        <p th:text="${user.createdAt}"></p>
+    </div>
+    
+    <div>
+        <h3>Last Updated</h3>
+        <p th:text="${user.updatedAt}"></p>
+    </div>
+    
+    <div>
+        <a th:href="@{/it-support/users/{id}/login-history(id=${user.id})}">View Login History</a>
+    </div>
+</body>
+</html>

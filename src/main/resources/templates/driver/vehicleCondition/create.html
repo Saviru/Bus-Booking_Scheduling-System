@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Submit Vehicle Condition Report</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Submit Vehicle Condition Report</h1>
+    
+    <div>
+        <a href="/driver/vehicle-reports">Back to Reports</a>
+    </div>
+    
+    <div th:if="${errorMessage}" style="color: red;" th:text="${errorMessage}"></div>
+    
+    <form th:action="@{/driver/vehicle-reports/create}" th:object="${report}" method="post">
+        <h3>Driver & Vehicle Information</h3>
+        
+        <div>
+            <label for="driverName">Driver Name:</label>
+            <input type="text" id="driverName" th:field="*{driverName}" required>
+            <span th:if="${#fields.hasErrors('driverName')}" style="color: red;" th:errors="*{driverName}"></span>
+        </div>
+        
+        <div>
+            <label for="driverId">Driver ID:</label>
+            <input type="text" id="driverId" th:field="*{driverId}">
+        </div>
+        
+        <div>
+            <label for="vehicleNumber">Vehicle Number:</label>
+            <input type="text" id="vehicleNumber" th:field="*{vehicleNumber}" required>
+            <span th:if="${#fields.hasErrors('vehicleNumber')}" style="color: red;" th:errors="*{vehicleNumber}"></span>
+        </div>
+        
+        <!-- Add report date field that was missing -->
+        <div>
+            <label for="reportDate">Report Date:</label>
+            <input type="datetime-local" id="reportDate" th:field="*{reportDate}" required>
+            <span th:if="${#fields.hasErrors('reportDate')}" style="color: red;" th:errors="*{reportDate}"></span>
+        </div>
+        
+        <div>
+            <label for="reportType">Report Type:</label>
+            <select id="reportType" th:field="*{reportType}" required>
+                <option value="PRE_TRIP">Pre-Trip Inspection</option>
+                <option value="POST_TRIP">Post-Trip Inspection</option>
+                <option value="MAINTENANCE_REQUEST">Maintenance Request</option>
+                <option value="INCIDENT">Incident Report</option>
+            </select>
+            <span th:if="${#fields.hasErrors('reportType')}" style="color: red;" th:errors="*{reportType}"></span>
+        </div>
+        
+        <div>
+            <label for="odometerReading">Odometer Reading (km):</label>
+            <input type="number" id="odometerReading" th:field="*{odometerReading}" min="0">
+        </div>
+        
+        <h3>Vehicle Condition</h3>
+        
+        <div>
+            <label for="brakesCondition">Brakes:</label>
+            <select id="brakesCondition" th:field="*{brakesCondition}" required>
+                <option value="GOOD">Good</option>
+                <option value="FAIR">Fair</option>
+                <option value="POOR">Poor</option>
+                <option value="NEEDS_ATTENTION">Needs Attention</option>
+                <option value="UNKNOWN">Unknown</option>
+            </select>
+            <span th:if="${#fields.hasErrors('brakesCondition')}" style="color: red;" th:errors="*{brakesCondition}"></span>
+        </div>
+        
+        <div>
+            <label for="lightsCondition">Lights:</label>
+            <select id="lightsCondition" th:field="*{lightsCondition}" required>
+                <option value="GOOD">Good</option>
+                <option value="FAIR">Fair</option>
+                <option value="POOR">Poor</option>
+                <option value="NEEDS_ATTENTION">Needs Attention</option>
+                <option value="UNKNOWN">Unknown</option>
+            </select>
+            <span th:if="${#fields.hasErrors('lightsCondition')}" style="color: red;" th:errors="*{lightsCondition}"></span>
+        </div>
+        
+        <div>
+            <label for="tiresCondition">Tires:</label>
+            <select id="tiresCondition" th:field="*{tiresCondition}" required>
+                <option value="GOOD">Good</option>
+                <option value="FAIR">Fair</option>
+                <option value="POOR">Poor</option>
+                <option value="NEEDS_ATTENTION">Needs Attention</option>
+                <option value="UNKNOWN">Unknown</option>
+            </select>
+            <span th:if="${#fields.hasErrors('tiresCondition')}" style="color: red;" th:errors="*{tiresCondition}"></span>
+        </div>
+        
+        <div>
+            <label for="exteriorCondition">Exterior:</label>
+            <select id="exteriorCondition" th:field="*{exteriorCondition}">
+                <option value="GOOD">Good</option>
+                <option value="FAIR">Fair</option>
+                <option value="POOR">Poor</option>
+                <option value="NEEDS_ATTENTION">Needs Attention</option>
+                <option value="UNKNOWN">Unknown</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="interiorCondition">Interior:</label>
+            <select id="interiorCondition" th:field="*{interiorCondition}">
+                <option value="GOOD">Good</option>
+                <option value="FAIR">Fair</option>
+                <option value="POOR">Poor</option>
+                <option value="NEEDS_ATTENTION">Needs Attention</option>
+                <option value="UNKNOWN">Unknown</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="fuelLevel">Fuel Level:</label>
+            <select id="fuelLevel" th:field="*{fuelLevel}">
+                <option value="FULL">Full</option>
+                <option value="3/4">3/4</option>
+                <option value="1/2">1/2</option>
+                <option value="1/4">1/4</option>
+                <option value="EMPTY">Empty</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="details">Additional Details:</label>
+            <textarea id="details" th:field="*{details}" rows="5" cols="50"></textarea>
+        </div>
+        
+        <div>
+            <button type="submit">Submit Report</button>
+        </div>
+    </form>
+</body>
+</html>

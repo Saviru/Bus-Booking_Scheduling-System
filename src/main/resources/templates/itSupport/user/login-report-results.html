@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login Report Results</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Login Activity Report Results</h1>
+    
+    <div>
+        <a href="/it-support/users">Back to User Management</a> |
+        <a href="/it-support/users/login-report">New Report</a>
+    </div>
+    
+    <div>
+        <h3>Report Parameters</h3>
+        <p>Period: <span th:text="${startDate}"></span> to <span th:text="${endDate}"></span></p>
+    </div>
+    
+    <div>
+        <h3>Results</h3>
+        <p>Total Login Attempts: <span th:text="${loginHistory.size()}"></span></p>
+    </div>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Date/Time</th>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>IP Address</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${loginHistory.empty}">
+                <td colspan="5">No login activity found for the specified period</td>
+            </tr>
+            <tr th:each="entry : ${loginHistory}">
+                <td th:text="${entry.loginTime}"></td>
+                <td th:text="${entry.user.username}"></td>
+                <td th:text="${entry.user.fullName}"></td>
+                <td th:text="${entry.ipAddress != null ? entry.ipAddress : 'N/A'}"></td>
+                <td th:text="${entry.status}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

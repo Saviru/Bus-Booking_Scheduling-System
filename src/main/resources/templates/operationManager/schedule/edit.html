@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Schedule</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Edit Schedule</h1>
+    
+    <div>
+        <a href="/schedules">Back to Schedules</a>
+    </div>
+    
+    <form th:action="@{/schedules/{id}/edit(id=${schedule.id})}" th:object="${schedule}" method="post">
+        <div>
+            <label for="scheduleId">Schedule ID:</label>
+            <input type="text" id="scheduleId" th:field="*{scheduleId}" required>
+            <span th:if="${#fields.hasErrors('scheduleId')}" th:errors="*{scheduleId}"></span>
+        </div>
+        
+        <div>
+            <label for="routeId">Route:</label>
+            <select id="routeId" name="routeId" required>
+                <option value="">Select Route</option>
+                <option th:each="route : ${routes}" 
+                        th:value="${route.id}" 
+                        th:text="${route.routeId + ' (' + route.origin + ' - ' + route.destination + ')'}"
+                        th:selected="${schedule.route != null && schedule.route.id == route.id}">
+                </option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="scheduleDate">Date:</label>
+            <input type="date" id="scheduleDate" th:field="*{scheduleDate}" required>
+            <span th:if="${#fields.hasErrors('scheduleDate')}" th:errors="*{scheduleDate}"></span>
+        </div>
+        
+        <div>
+            <label for="departureTime">Departure Time:</label>
+            <input type="time" id="departureTime" name="departureTime" th:value="${schedule.departureTime}" required>
+            <span th:if="${#fields.hasErrors('departureTime')}" th:errors="*{departureTime}"></span>
+        </div>
+        
+        <div>
+            <label for="arrivalTime">Arrival Time:</label>
+            <input type="time" id="arrivalTime" name="arrivalTime" th:value="${schedule.arrivalTime}" required>
+            <span th:if="${#fields.hasErrors('arrivalTime')}" th:errors="*{arrivalTime}"></span>
+        </div>
+        
+        <div>
+            <label for="status">Status:</label>
+            <select id="status" th:field="*{status}" required>
+                <option value="active">Active</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="completed">Completed</option>
+            </select>
+            <span th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></span>
+        </div>
+        
+        <div>
+            <label for="remarks">Remarks:</label>
+            <textarea id="remarks" th:field="*{remarks}" rows="3" cols="40"></textarea>
+        </div>
+        
+        <div>
+            <button type="submit">Update Schedule</button>
+        </div>
+    </form>
+</body>
+</html>

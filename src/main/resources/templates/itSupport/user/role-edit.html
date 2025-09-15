@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Role</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Edit Role</h1>
+    
+    <div>
+        <a href="/it-support/users/roles">Back to Role Management</a>
+    </div>
+    
+    <form th:action="@{/it-support/users/roles/{id}/edit(id=${role.id})}" th:object="${role}" method="post">
+        <div>
+            <label for="name">Role Name:</label>
+            <input type="text" id="name" th:field="*{name}" required>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        </div>
+        
+        <div>
+            <label for="description">Description:</label>
+            <textarea id="description" th:field="*{description}" rows="3" cols="40"></textarea>
+        </div>
+        
+        <div>
+            <button type="submit">Update Role</button>
+        </div>
+    </form>
+</body>
+</html>

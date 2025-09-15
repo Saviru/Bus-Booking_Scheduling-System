@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Complaint</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Complaint Details</h1>
+    
+    <div th:if="${successMessage}" th:text="${successMessage}"></div>
+    
+    <div>
+        <a href="/customer-service/complaints">Back to Complaints</a> |
+        <a th:href="@{/customer-service/complaints/{id}/edit(id=${complaint.id})}">Edit Complaint</a> |
+        <a th:href="@{/customer-service/complaints/{id}/update-status(id=${complaint.id})}">Update Status</a>
+    </div>
+    
+    <div>
+        <h3>Reference Information</h3>
+        <table border="1">
+            <tr>
+                <th>Reference Number</th>
+                <td th:text="${complaint.referenceNumber}"></td>
+            </tr>
+            <tr>
+                <th>Submission Date</th>
+                <td th:text="${complaint.submissionDate}"></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td th:text="${complaint.status}"></td>
+            </tr>
+            <tr>
+                <th>Priority</th>
+                <td th:text="${complaint.priority}"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div>
+        <h3>Customer Information</h3>
+        <table border="1">
+            <tr>
+                <th>Name</th>
+                <td th:text="${complaint.customerName}"></td>
+            </tr>
+            <tr>
+                <th>Contact Number</th>
+                <td th:text="${complaint.contactNumber}"></td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td th:text="${complaint.email != null ? complaint.email : 'N/A'}"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div>
+        <h3>Complaint Details</h3>
+        <table border="1">
+            <tr>
+                <th>Category</th>
+                <td th:text="${complaint.category}"></td>
+            </tr>
+            <tr>
+                <th>Incident Date</th>
+                <td th:text="${complaint.incidentDate}"></td>
+            </tr>
+            <tr>
+                <th>Route ID</th>
+                <td th:text="${complaint.routeId != null ? complaint.routeId : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Schedule ID</th>
+                <td th:text="${complaint.scheduleId != null ? complaint.scheduleId : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td th:text="${complaint.description}"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div th:if="${complaint.status == 'IN_PROGRESS' || complaint.status == 'RESOLVED' || complaint.status == 'CLOSED'}">
+        <h3>Resolution Information</h3>
+        <table border="1">
+            <tr>
+                <th>Assigned To</th>
+                <td th:text="${complaint.assignedTo != null ? complaint.assignedTo : 'Unassigned'}"></td>
+            </tr>
+            <tr th:if="${complaint.status == 'RESOLVED' || complaint.status == 'CLOSED'}">
+                <th>Resolution Date</th>
+                <td th:text="${complaint.resolutionDate}"></td>
+            </tr>
+            <tr>
+                <th>Resolution Notes</th>
+                <td th:text="${complaint.resolutionNotes != null ? complaint.resolutionNotes : 'No notes available'}"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

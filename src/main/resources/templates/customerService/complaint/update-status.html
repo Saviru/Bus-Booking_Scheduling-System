@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Update Complaint Status</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Update Complaint Status</h1>
+    
+    <div>
+        <a href="/customer-service/complaints">Back to Complaints</a> |
+        <a th:href="@{/customer-service/complaints/{id}(id=${complaint.id})}">View Complaint</a>
+    </div>
+    
+    <div>
+        <h3>Complaint Reference: <span th:text="${complaint.referenceNumber}"></span></h3>
+        <p>Customer: <span th:text="${complaint.customerName}"></span></p>
+        <p>Category: <span th:text="${complaint.category}"></span></p>
+        <p>Current Status: <span th:text="${complaint.status}"></span></p>
+    </div>
+    
+    <form th:action="@{/customer-service/complaints/{id}/update-status(id=${complaint.id})}" method="post">
+        <div>
+            <label for="status">New Status:</label>
+            <select id="status" name="status" required>
+                <option value="PENDING" th:selected="${complaint.status == 'PENDING'}">Pending</option>
+                <option value="IN_PROGRESS" th:selected="${complaint.status == 'IN_PROGRESS'}">In Progress</option>
+                <option value="RESOLVED" th:selected="${complaint.status == 'RESOLVED'}">Resolved</option>
+                <option value="CLOSED" th:selected="${complaint.status == 'CLOSED'}">Closed</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="assignedTo">Assigned To:</label>
+            <input type="text" id="assignedTo" name="assignedTo" th:value="${complaint.assignedTo}">
+        </div>
+        
+        <div>
+            <label for="resolutionNotes">Resolution Notes:</label>
+            <textarea id="resolutionNotes" name="resolutionNotes" rows="5" cols="50" 
+                      th:text="${complaint.resolutionNotes}"></textarea>
+        </div>
+        
+        <div>
+            <button type="submit">Update Status</button>
+        </div>
+    </form>
+</body>
+</html>

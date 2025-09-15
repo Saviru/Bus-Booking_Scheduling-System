@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Schedule Report</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Generate Schedule Report</h1>
+    
+    <div>
+        <a href="/schedules">Back to Schedules</a>
+    </div>
+    
+    <form action="/schedules/generate-report" method="get">
+        <div>
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate" required>
+        </div>
+        
+        <div>
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate" required>
+        </div>
+        
+        <div>
+            <label for="routeId">Route (Optional):</label>
+            <select id="routeId" name="routeId">
+                <option value="">All Routes</option>
+                <option th:each="route : ${routes}" 
+                        th:value="${route.id}" 
+                        th:text="${route.routeId + ' (' + route.origin + ' - ' + route.destination + ')'}">
+                </option>
+            </select>
+        </div>
+        
+        <div>
+            <button type="submit">Generate Report</button>
+        </div>
+    </form>
+</body>
+</html>
