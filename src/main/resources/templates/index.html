@@ -1,34 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Bus System - Home</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Booking & Schedule System</title>
 </head>
 <body>
-    <h1>Welcome to Bus System</h1>
+    <header>
+        <h1>Bus Booking & Schedule System</h1>
+        <nav>
+            <div th:if="${loggedInPassenger == null}">
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            </div>
+            <div th:if="${loggedInPassenger != null}">
+                <span>Welcome, <span th:text="${loggedInPassenger.fullName}"></span>!</span>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
     
-    <h2>Operation Manager</h2>
-    <ul>
-        <li><a href="/routes">Route Management</a></li>
-        <li><a href="/schedules">Schedule Management</a></li>
-    </ul>
+    <main>
+        <section>
+            <h2>Welcome to Bus Booking System</h2>
+            <p>Book your bus tickets easily and manage your travel preferences.</p>
+            
+            <div th:if="${loggedInPassenger == null}">
+                <h3>New to our service?</h3>
+                <p>Create an account to start booking tickets and manage your travel profile.</p>
+                <a href="/register">Register Now</a>
+                
+                <h3>Already have an account?</h3>
+                <p>Login to access your dashboard and manage your bookings.</p>
+                <a href="/login">Login Here</a>
+            </div>
+            
+            <div th:if="${loggedInPassenger != null}">
+                <h3>Quick Actions</h3>
+                <ul>
+                    <li><a href="/dashboard">Go to Dashboard</a></li>
+                    <li><a href="/profile">View Profile</a></li>
+                    <li><a href="/bookings">My Bookings</a></li>
+                    <li><a href="/search">Search Routes</a></li>
+                </ul>
+            </div>
+        </section>
+        
+        <section>
+            <h3>Features</h3>
+            <ul>
+                <li>Easy ticket booking</li>
+                <li>Seat selection</li>
+                <li>Payment management</li>
+                <li>Travel preferences</li>
+                <li>Booking history</li>
+                <li>Route search</li>
+            </ul>
+        </section>
+    </main>
     
-    <h2>IT Support</h2>
-    <ul>
-        <li><a href="/it-support/users">User Access & Role Management</a></li>
-        <li><a href="/it-support/backup/configs">Backup & Restore Management</a></li>
-    </ul>
+    <footer>
+        <p>&copy; 2025 Bus Booking System. All rights reserved.</p>
+    </footer>
     
-    <h2>Customer Service</h2>
-    <ul>
-        <li><a href="/customer-service/complaints">Complaint Management</a></li>
-        <li><a href="/customer-service/feedback">Feedback Management</a></li>
-    </ul>
+    <div th:if="${success}">
+        <p th:text="${success}"></p>
+    </div>
     
-    <h2>Driver</h2>
-    <ul>
-        <li><a href="/driver/trip-logs">Trip Logs</a></li>
-        <li><a href="/driver/vehicle-reports">Vehicle Condition Reports</a></li>
-    </ul>
+    <div th:if="${error}">
+        <p th:text="${error}"></p>
+    </div>
 </body>
 </html>

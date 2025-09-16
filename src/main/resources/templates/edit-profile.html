@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Bus Booking System</title>
+</head>
+<body>
+    <header>
+        <h1>Edit Profile</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">View Profile</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Update Profile Information</h2>
+            
+            <form method="post" action="/profile/update" th:object="${passenger}">
+                <h3>Basic Information</h3>
+                
+                <div>
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" th:field="*{firstName}" required>
+                    <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+                </div>
+                
+                <div>
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" th:field="*{lastName}" required>
+                    <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+                </div>
+                
+                <div>
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="tel" id="phoneNumber" th:field="*{phoneNumber}">
+                    <span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></span>
+                </div>
+                
+                <div>
+                    <label for="dateOfBirth">Date of Birth:</label>
+                    <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}">
+                </div>
+                
+                <div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" th:field="*{gender}">
+                        <option value="">Select Gender</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                
+                <h3>Emergency Contact</h3>
+                
+                <div>
+                    <label for="emergencyContact">Emergency Contact Name:</label>
+                    <input type="text" id="emergencyContact" th:field="*{emergencyContact}">
+                </div>
+                
+                <div>
+                    <label for="emergencyPhone">Emergency Phone:</label>
+                    <input type="tel" id="emergencyPhone" th:field="*{emergencyPhone}">
+                </div>
+                
+                <h3>Travel Preferences</h3>
+                
+                <div>
+                    <label for="seatPreference">Seat Preference:</label>
+                    <select id="seatPreference" th:field="*{seatPreference}">
+                        <option value="">No Preference</option>
+                        <option value="Window">Window</option>
+                        <option value="Aisle">Aisle</option>
+                        <option value="Any">Any</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="frequentDestinations">Frequent Destinations (comma-separated):</label>
+                    <input type="text" id="frequentDestinations" th:field="*{frequentDestinations}">
+                </div>
+                
+                <div>
+                    <label for="accessibilityNeeds">Accessibility Needs:</label>
+                    <textarea id="accessibilityNeeds" th:field="*{accessibilityNeeds}" rows="3"></textarea>
+                </div>
+                
+                <div>
+                    <label for="mealPreference">Meal Preference:</label>
+                    <select id="mealPreference" th:field="*{mealPreference}">
+                        <option value="">No Preference</option>
+                        <option value="Vegetarian">Vegetarian</option>
+                        <option value="Non-Vegetarian">Non-Vegetarian</option>
+                        <option value="Vegan">Vegan</option>
+                        <option value="Halal">Halal</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <button type="submit">Update Profile</button>
+                    <a href="/profile">Cancel</a>
+                </div>
+            </form>
+        </section>
+    </main>
+    
+    <div th:if="${success}">
+        <p th:text="${success}"></p>
+    </div>
+    
+    <div th:if="${error}">
+        <p th:text="${error}"></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Methods - Bus Booking System</title>
+</head>
+<body>
+    <header>
+        <h1>Payment Methods</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Manage Payment Methods</h2>
+            
+            <h3>Current Payment Methods</h3>
+            <div th:if="${passenger.paymentMethods != null and !passenger.paymentMethods.isEmpty()}">
+                <p th:text="${passenger.paymentMethods}"></p>
+            </div>
+            <div th:if="${passenger.paymentMethods == null or passenger.paymentMethods.isEmpty()}">
+                <p>No payment methods added yet.</p>
+            </div>
+            
+            <form method="post" action="/profile/payment-methods">
+                <div>
+                    <label for="paymentMethods">Payment Methods (comma-separated):</label>
+                    <textarea id="paymentMethods" name="paymentMethods" rows="4" th:text="${passenger.paymentMethods}"></textarea>
+                    <small>Example: Visa *1234, MasterCard *5678, PayPal account@email.com</small>
+                </div>
+                
+                <div>
+                    <button type="submit">Update Payment Methods</button>
+                    <a href="/profile">Back to Profile</a>
+                </div>
+            </form>
+        </section>
+        
+        <section>
+            <h3>Payment Method Guidelines</h3>
+            <ul>
+                <li>Only store payment method references, not full details</li>
+                <li>Use format: CardType *LastFourDigits</li>
+                <li>Separate multiple methods with commas</li>
+                <li>Contact support to remove compromised payment methods</li>
+            </ul>
+        </section>
+    </main>
+    
+    <div th:if="${success}">
+        <p th:text="${success}"></p>
+    </div>
+    
+    <div th:if="${error}">
+        <p th:text="${error}"></p>
+    </div>
+</body>
+</html>

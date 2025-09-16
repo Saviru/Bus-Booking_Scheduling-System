@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Bus Booking System</title>
+</head>
+<body>
+    <header>
+        <h1>Bus Booking System</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/login">Login</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Register</h2>
+            
+            <form method="post" action="/register" th:object="${passenger}">
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" th:field="*{username}" required>
+                    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                </div>
+                
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" th:field="*{email}" required>
+                    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                </div>
+                
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" th:field="*{password}" required>
+                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                </div>
+                
+                <div>
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" th:field="*{firstName}" required>
+                    <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+                </div>
+                
+                <div>
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" th:field="*{lastName}" required>
+                    <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+                </div>
+                
+                <div>
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="tel" id="phoneNumber" th:field="*{phoneNumber}">
+                    <span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></span>
+                </div>
+                
+                <div>
+                    <button type="submit">Register</button>
+                </div>
+            </form>
+            
+            <p>Already have an account? <a href="/login">Login here</a></p>
+        </section>
+    </main>
+    
+    <div th:if="${success}">
+        <p th:text="${success}"></p>
+    </div>
+    
+    <div th:if="${error}">
+        <p th:text="${error}"></p>
+    </div>
+</body>
+</html>

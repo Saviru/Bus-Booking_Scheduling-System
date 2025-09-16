@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Bus Booking System</title>
+</head>
+<body>
+    <header>
+        <h1>My Bookings</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/bookings/new">New Booking</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Booking Management</h2>
+            <p>Welcome, <span th:text="${passenger.fullName}"></span>! Manage your bus bookings here.</p>
+        </section>
+        
+        <section>
+            <h3>Filter Bookings</h3>
+            <form method="get" action="/bookings">
+                <div>
+                    <label for="filter">Filter by:</label>
+                    <select name="filter" id="filter">
+                        <option value="all" th:selected="${currentFilter == 'all'}">All Bookings</option>
+                        <option value="upcoming" th:selected="${currentFilter == 'upcoming'}">Upcoming</option>
+                        <option value="past" th:selected="${currentFilter == 'past'}">Past</option>
+                        <option value="pending" th:selected="${currentFilter == 'pending'}">Pending</option>
+                        <option value="confirmed" th:selected="${currentFilter == 'confirmed'}">Confirmed</option>
+                        <option value="cancelled" th:selected="${currentFilter == 'cancelled'}">Cancelled</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="fromDate">From Date:</label>
+                    <input type="date" name="fromDate" id="fromDate" th:value="${fromDate}">
+                    
+                    <label for="toDate">To Date:</label>
+                    <input type="date" name="toDate" id="toDate" th:value="${toDate}">
+                </div>
+                
+                <button type="submit">Apply Filter</button>
+                <a href="/bookings">Clear Filter</a>
+            </form>
+        </section>
+        
+        <section>
+            <h3>Search by Reference</h3>
+            <form method="get" action="/bookings/search">
+                <input type="text" name="reference" placeholder="Enter booking reference" required>
+                <button type="submit">Search</button>
+            </form>
+        </section>
+        
+        <section>
+            <h3>Your Bookings</h3>
+            
+            <div th:if="${bookings.empty}">
+                <p>No bookings found.</p>
+                <a href="/bookings/new">Create your first booking</a>
+            </div>
+            
+            <div th:if="${!bookings.empty}">
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Route</th>
+                            <th>Travel Date</th>
+                            <th>Departure</th>
+                            <th>Seats</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="booking : ${bookings}">
+                            <td>
+                                <a th:href="@{/bookings/{id}(id=${booking.id})}" 
+                                   th:text="${booking.bookingReference}"></a>
+                            </td>
+                            <td th:text="${booking.schedule.route.routeDescription}"></td>
+                            <td th:text="${#temporals.format(booking.travelDate, 'MMM dd, yyyy')}"></td>
+                            <td th:text="${booking.schedule.departureTime}"></td>
+                            <td th:text="${booking.numberOfSeats}"></td>
+                            <td th:text="'$' + ${booking.totalAmount}"></td>
+                            <td th:text="${booking.statusDisplayName}"></td>
+                            <td>
+                                <a th:href="@{/bookings/{id}(id=${booking.id})}">View</a>
+                                
+                                <a th:if="${booking.canBeModified()}" 
+                                   th:href="@{/bookings/{id}/edit(id=${booking.id})}">Edit</a>
+                                
+                                <form th:if="${booking.canBeCancelled()}" 
+                                      method="post" 
+                                      th:action="@{/bookings/{id}/cancel(id=${booking.id})}" 
+                                      style="display: inline;">
+                                    <button type="submit" 
+                                            onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                        Cancel
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <section>
+            <h3>Quick Actions</h3>
+            <ul>
+                <li><a href="/bookings/new">Book New Ticket</a></li>
+                <li><a href="/bookings?filter=upcoming">View Upcoming Trips</a></li>
+                <li><a href="/bookings?filter=pending">Pending Payments</a></li>
+                <li><a href="/dashboard">Back to Dashboard</a></li>
+            </ul>
+        </section>
+    </main>
+    
+    <div th:if="${success}">
+        <p style="color: green;" th:text="${success}"></p>
+    </div>
+    
+    <div th:if="${error}">
+        <p style="color: red;" th:text="${error}"></p>
+    </div>
+</body>
+</html>

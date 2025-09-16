@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Bus Booking System</title>
+</head>
+<body>
+    <header>
+        <h1>Passenger Dashboard</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/profile">Profile</a>
+            <a href="/bookings">My Bookings</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Welcome, <span th:text="${passenger.fullName}"></span>!</h2>
+            <p>Manage your bookings and profile from here.</p>
+        </section>
+        
+        <section>
+            <h3>Quick Actions</h3>
+            <ul>
+                <li><a href="/search">Search Bus Routes</a></li>
+                <li><a href="/bookings/new">Book New Ticket</a></li>
+                <li><a href="/bookings">View My Bookings</a></li>
+                <li><a href="/profile">View Profile</a></li>
+                <li><a href="/profile/edit">Edit Profile</a></li>
+                <li><a href="/profile/payment-methods">Manage Payment Methods</a></li>
+            </ul>
+        </section>
+        
+        <section>
+            <h3>Recent Activity</h3>
+            <p>No recent bookings found.</p>
+        </section>
+        
+        <section>
+            <h3>Profile Summary</h3>
+            <ul>
+                <li>Username: <span th:text="${passenger.username}"></span></li>
+                <li>Email: <span th:text="${passenger.email}"></span></li>
+                <li>Phone: <span th:text="${passenger.phoneNumber}"></span></li>
+                <li>Seat Preference: <span th:text="${passenger.seatPreference}"></span></li>
+                <li>Member since: <span th:text="${#temporals.format(passenger.createdAt, 'MMM dd, yyyy')}"></span></li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>
