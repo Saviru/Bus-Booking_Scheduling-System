@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Management - Operations Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav {
+            display: flex;
+            gap: 1rem;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav a:hover {
+            background-color: #34495e;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .stats-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            flex: 1;
+        }
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: end;
+        }
+        .filter-group {
+            flex: 1;
+        }
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+        .btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .routes-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .table-header {
+            padding: 1rem;
+            background-color: #34495e;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #ecf0f1;
+            font-weight: bold;
+        }
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-suspended {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .no-routes {
+            text-align: center;
+            padding: 2rem;
+            color: #7f8c8d;
+        }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .route-code {
+            font-family: monospace;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Route Management</h1>
+        </div>
+        <nav class="nav">
+            <a href="/operations/dashboard">Dashboard</a>
+            <a href="/operations/routes">Routes</a>
+            <a href="/operations/profile">Profile</a>
+            <a href="/operations/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success">
+            <p th:text="${success}"></p>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}"></p>
+        </div>
+        
+        <!-- Statistics Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number" th:text="${totalRoutes}">0</div>
+                <div>Total Routes</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" th:text="${activeRoutes}">0</div>
+                <div>Active</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" th:text="${inactiveRoutes}">0</div>
+                <div>Inactive</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" th:text="${suspendedRoutes}">0</div>
+                <div>Suspended</div>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filters">
+            <form th:action="@{/operations/routes}" method="get">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="search">Search</label>
+                        <input type="text" id="search" name="search" 
+                               th:value="${currentSearch}" 
+                               placeholder="Search by route code, origin, or destination">
+                    </div>
+                    <div class="filter-group">
+                        <label for="status">Status</label>
+                        <select id="status" name="status">
+                            <option value="">All Statuses</option>
+                            <option th:each="status : ${statuses}" 
+                                    th:value="${status}" 
+                                    th:text="${status}"
+                                    th:selected="${status.toString() == currentStatus}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="origin">Origin</label>
+                        <select id="origin" name="origin">
+                            <option value="">All Origins</option>
+                            <option th:each="origin : ${origins}" 
+                                    th:value="${origin}" 
+                                    th:text="${origin}"
+                                    th:selected="${origin == currentOrigin}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="destination">Destination</label>
+                        <select id="destination" name="destination">
+                            <option value="">All Destinations</option>
+                            <option th:each="destination : ${destinations}" 
+                                    th:value="${destination}" 
+                                    th:text="${destination}"
+                                    th:selected="${destination == currentDestination}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Routes Table -->
+        <div class="routes-table">
+            <div class="table-header">
+                <h3>Routes</h3>
+                <div>
+                    <a href="/operations/routes/create" class="btn btn-success">+ Add Route</a>
+                    <a href="/operations/routes/export" class="btn btn-secondary">Export</a>
+                </div>
+            </div>
+            
+            <div th:if="${routes.isEmpty()}" class="no-routes">
+                <p>No routes found matching your criteria.</p>
+            </div>
+            
+            <table th:if="${!routes.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>Route Code</th>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Distance</th>
+                        <th>Duration</th>
+                        <th>Base Fare</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="route : ${routes}">
+                        <td>
+                            <span class="route-code" th:text="${route.routeCode}"></span>
+                        </td>
+                        <td th:text="${route.origin}"></td>
+                        <td th:text="${route.destination}"></td>
+                        <td th:text="${route.distance + ' km'}"></td>
+                        <td th:text="${route.duration + ' min'}"></td>
+                        <td th:text="${'$' + route.baseFare}"></td>
+                        <td>
+                            <span class="status-badge"
+                                  th:class="${'status-badge status-' + route.status.toString().toLowerCase()}"
+                                  th:text="${route.status}">
+                            </span>
+                        </td>
+                        <td th:text="${#temporals.format(route.createdAt, 'MMM dd, yyyy')}"></td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{/operations/routes/{id}(id=${route.id})}" 
+                                   class="btn btn-primary">View</a>
+                                <a th:href="@{/operations/routes/{id}/edit(id=${route.id})}" 
+                                   class="btn btn-warning">Edit</a>
+                                <form th:if="${route.status == T(com.busSystem.BookingSchedule.model.Route$RouteStatus).ACTIVE}"
+                                      th:action="@{/operations/routes/{id}/deactivate(id=${route.id})}" 
+                                      method="post" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger" 
+                                            onclick="return confirm('Are you sure you want to deactivate this route?')">
+                                        Deactivate
+                                    </button>
+                                </form>
+                                <form th:if="${route.status != T(com.busSystem.BookingSchedule.model.Route$RouteStatus).ACTIVE}"
+                                      th:action="@{/operations/routes/{id}/reactivate(id=${route.id})}" 
+                                      method="post" style="display: inline;">
+                                    <button type="submit" class="btn btn-success">
+                                        Reactivate
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
