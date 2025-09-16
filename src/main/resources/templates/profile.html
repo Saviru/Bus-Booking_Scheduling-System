@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Bus Booking System</title>
+</head>
+<body>
+    <header>
+        <h1>My Profile</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile/edit">Edit Profile</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Profile Information</h2>
+            
+            <h3>Basic Information</h3>
+            <ul>
+                <li>Username: <span th:text="${passenger.username}"></span></li>
+                <li>Email: <span th:text="${passenger.email}"></span></li>
+                <li>Full Name: <span th:text="${passenger.fullName}"></span></li>
+                <li>Phone Number: <span th:text="${passenger.phoneNumber}"></span></li>
+                <li>Date of Birth: <span th:text="${passenger.dateOfBirth}"></span></li>
+                <li>Gender: <span th:text="${passenger.gender}"></span></li>
+            </ul>
+            
+            <h3>Emergency Contact</h3>
+            <ul>
+                <li>Emergency Contact: <span th:text="${passenger.emergencyContact}"></span></li>
+                <li>Emergency Phone: <span th:text="${passenger.emergencyPhone}"></span></li>
+            </ul>
+            
+            <h3>Travel Preferences</h3>
+            <ul>
+                <li>Seat Preference: <span th:text="${passenger.seatPreference}"></span></li>
+                <li>Frequent Destinations: <span th:text="${passenger.frequentDestinations}"></span></li>
+                <li>Accessibility Needs: <span th:text="${passenger.accessibilityNeeds}"></span></li>
+                <li>Meal Preference: <span th:text="${passenger.mealPreference}"></span></li>
+            </ul>
+            
+            <h3>Account Information</h3>
+            <ul>
+                <li>Member Since: <span th:text="${#temporals.format(passenger.createdAt, 'MMM dd, yyyy')}"></span></li>
+                <li>Last Updated: <span th:text="${#temporals.format(passenger.updatedAt, 'MMM dd, yyyy')}"></span></li>
+                <li>Account Status: <span th:text="${passenger.isActive ? 'Active' : 'Inactive'}"></span></li>
+            </ul>
+        </section>
+        
+        <section>
+            <h3>Profile Management</h3>
+            <ul>
+                <li><a href="/profile/edit">Edit Profile</a></li>
+                <li><a href="/profile/payment-methods">Manage Payment Methods</a></li>
+                <li><a href="/profile/change-password">Change Password</a></li>
+                <li><a href="/profile/delete">Delete Account</a></li>
+            </ul>
+        </section>
+    </main>
+    
+    <div th:if="${success}">
+        <p th:text="${success}"></p>
+    </div>
+    
+    <div th:if="${error}">
+        <p th:text="${error}"></p>
+    </div>
+</body>
+</html>
