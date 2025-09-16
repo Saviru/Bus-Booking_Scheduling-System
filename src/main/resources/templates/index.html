@@ -4,14 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bus Booking & Schedule System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: #34495e;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .hero {
+            background: white;
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .access-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .access-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .access-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        .features {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .feature-item {
+            padding: 1rem;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 3rem;
+        }
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Bus Booking & Schedule System</h1>
+        <div>
+            <h1>Bus Booking & Schedule System</h1>
+        </div>
         <nav>
             <div th:if="${loggedInPassenger == null}">
-                <a href="/login">Login</a>
+                <a href="/login">Passenger Login</a>
                 <a href="/register">Register</a>
+                <a href="/operations/login">Operations Login</a>
             </div>
             <div th:if="${loggedInPassenger != null}">
                 <span>Welcome, <span th:text="${loggedInPassenger.fullName}"></span>!</span>
@@ -21,55 +139,78 @@
         </nav>
     </header>
     
-    <main>
-        <section>
-            <h2>Welcome to Bus Booking System</h2>
-            <p>Book your bus tickets easily and manage your travel preferences.</p>
-            
-            <div th:if="${loggedInPassenger == null}">
-                <h3>New to our service?</h3>
-                <p>Create an account to start booking tickets and manage your travel profile.</p>
-                <a href="/register">Register Now</a>
-                
-                <h3>Already have an account?</h3>
-                <p>Login to access your dashboard and manage your bookings.</p>
-                <a href="/login">Login Here</a>
-            </div>
-            
-            <div th:if="${loggedInPassenger != null}">
-                <h3>Quick Actions</h3>
-                <ul>
-                    <li><a href="/dashboard">Go to Dashboard</a></li>
-                    <li><a href="/profile">View Profile</a></li>
-                    <li><a href="/bookings">My Bookings</a></li>
-                    <li><a href="/search">Search Routes</a></li>
-                </ul>
-            </div>
-        </section>
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success">
+            <p th:text="${success}"></p>
+        </div>
         
-        <section>
-            <h3>Features</h3>
-            <ul>
-                <li>Easy ticket booking</li>
-                <li>Seat selection</li>
-                <li>Payment management</li>
-                <li>Travel preferences</li>
-                <li>Booking history</li>
-                <li>Route search</li>
-            </ul>
-        </section>
-    </main>
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}"></p>
+        </div>
+        
+        <div class="hero">
+            <h2>Welcome to Bus Booking & Schedule System</h2>
+            <p>Your comprehensive solution for bus travel management and route operations.</p>
+        </div>
+        
+        <div class="access-grid">
+            <!-- Passenger Access -->
+            <div class="access-card">
+                <h3>🚌 Passenger Services</h3>
+                <p>Book tickets, manage bookings, and track your travel preferences.</p>
+                <div th:if="${loggedInPassenger == null}">
+                    <a href="/register" class="btn">Register Now</a>
+                    <a href="/login" class="btn btn-secondary">Login</a>
+                </div>
+                <div th:if="${loggedInPassenger != null}">
+                    <a href="/dashboard" class="btn">Go to Dashboard</a>
+                    <a href="/profile" class="btn btn-secondary">View Profile</a>
+                </div>
+            </div>
+            
+            <!-- Operations Manager Access -->
+            <div class="access-card">
+                <h3>⚙️ Operations Management</h3>
+                <p>Manage routes, schedules, and system operations for authorized personnel.</p>
+                <a href="/operations/login" class="btn">Operations Login</a>
+                <p style="font-size: 0.9rem; color: #7f8c8d; margin-top: 1rem;">
+                    For operations managers and administrators only
+                </p>
+            </div>
+        </div>
+        
+        <!-- Features Section -->
+        <div class="features">
+            <h3>System Features</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h4>Passenger Features</h4>
+                    <ul>
+                        <li>Easy ticket booking</li>
+                        <li>Seat selection</li>
+                        <li>Payment management</li>
+                        <li>Travel preferences</li>
+                        <li>Booking history</li>
+                        <li>Route search</li>
+                    </ul>
+                </div>
+                <div class="feature-item">
+                    <h4>Operations Features</h4>
+                    <ul>
+                        <li>Route management</li>
+                        <li>Schedule coordination</li>
+                        <li>Real-time status updates</li>
+                        <li>Performance analytics</li>
+                        <li>Conflict resolution</li>
+                        <li>System monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <footer>
-        <p>&copy; 2025 Bus Booking System. All rights reserved.</p>
+        <p>&copy; 2025 Bus Booking & Schedule System. All rights reserved.</p>
     </footer>
-    
-    <div th:if="${success}">
-        <p th:text="${success}"></p>
-    </div>
-    
-    <div th:if="${error}">
-        <p th:text="${error}"></p>
-    </div>
 </body>
 </html>

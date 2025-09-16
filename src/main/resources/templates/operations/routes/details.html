@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Details - Operations Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav {
+            display: flex;
+            gap: 1rem;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav a:hover {
+            background-color: #34495e;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .route-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .route-title {
+            margin: 0;
+            color: #2c3e50;
+        }
+        .route-code {
+            font-family: monospace;
+            background-color: #ecf0f1;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-suspended {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .details-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .details-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        .detail-value {
+            color: #2c3e50;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin-right: 0.5rem;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .stops-list {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+        .route-path {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin: 1rem 0;
+        }
+        .route-path .arrow {
+            color: #3498db;
+            font-weight: bold;
+            margin: 0 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Route Details</h1>
+        </div>
+        <nav class="nav">
+            <a href="/operations/dashboard">Dashboard</a>
+            <a href="/operations/routes">Routes</a>
+            <a href="/operations/profile">Profile</a>
+            <a href="/operations/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success">
+            <p th:text="${success}"></p>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}"></p>
+        </div>
+        
+        <!-- Route Header -->
+        <div class="route-header">
+            <div>
+                <h2 class="route-title">
+                    <span class="route-code" th:text="${route.routeCode}"></span>
+                    Route Details
+                </h2>
+                <div class="route-path">
+                    <span th:text="${route.origin}"></span>
+                    <span class="arrow">→</span>
+                    <span th:text="${route.destination}"></span>
+                </div>
+            </div>
+            <div>
+                <span class="status-badge"
+                      th:class="${'status-badge status-' + route.status.toString().toLowerCase()}"
+                      th:text="${route.status}">
+                </span>
+            </div>
+        </div>
+        
+        <!-- Route Details Grid -->
+        <div class="details-grid">
+            <!-- Basic Information -->
+            <div class="details-card">
+                <h3>Basic Information</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Route Code:</span>
+                    <span class="detail-value" th:text="${route.routeCode}"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Origin:</span>
+                    <span class="detail-value" th:text="${route.origin}"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Destination:</span>
+                    <span class="detail-value" th:text="${route.destination}"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value" th:text="${route.status}"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Route Description:</span>
+                    <span class="detail-value" th:text="${route.routeDescription}"></span>
+                </div>
+            </div>
+            
+            <!-- Route Metrics -->
+            <div class="details-card">
+                <h3>Route Metrics</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Distance:</span>
+                    <span class="detail-value" th:text="${route.distance + ' km'}"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Duration:</span>
+                    <span class="detail-value" th:text="${route.duration + ' minutes'}"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Base Fare:</span>
+                    <span class="detail-value" th:text="${'$' + route.baseFare}"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Average Speed:</span>
+                    <span class="detail-value" th:text="${#numbers.formatDecimal(route.distance * 60 / route.duration, 1, 1) + ' km/h'}"></span>
+                </div>
+            </div>
+            
+            <!-- Timestamps -->
+            <div class="details-card">
+                <h3>Timeline</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Created:</span>
+                    <span class="detail-value" th:text="${#temporals.format(route.createdAt, 'MMM dd, yyyy HH:mm')}"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Last Updated:</span>
+                    <span class="detail-value" th:text="${#temporals.format(route.updatedAt, 'MMM dd, yyyy HH:mm')}"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Days Active:</span>
+                    <span class="detail-value" th:text="${#temporals.until(route.createdAt, #temporals.createNow(), 'DAYS') + ' days'}"></span>
+                </div>
+            </div>
+            
+            <!-- Stops Information -->
+            <div class="details-card">
+                <h3>Intermediate Stops</h3>
+                <div th:if="${route.stops != null and !route.stops.isEmpty()}">
+                    <div class="stops-list">
+                        <pre th:text="${route.stops}"></pre>
+                    </div>
+                </div>
+                <div th:if="${route.stops == null or route.stops.isEmpty()}">
+                    <p class="detail-value">No intermediate stops configured</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="details-card">
+            <h3>Actions</h3>
+            <div class="action-buttons">
+                <a th:href="@{/operations/routes/{id}/edit(id=${route.id})}" 
+                   class="btn btn-warning">Edit Route</a>
+                
+                <!-- Status Change Actions -->
+                <div th:if="${route.status == T(com.busSystem.BookingSchedule.model.Route$RouteStatus).ACTIVE}">
+                    <form th:action="@{/operations/routes/{id}/status(id=${route.id})}" 
+                          method="post" style="display: inline;">
+                        <input type="hidden" name="status" value="SUSPENDED">
+                        <button type="submit" class="btn btn-warning" 
+                                onclick="return confirm('Are you sure you want to suspend this route?')">
+                            Suspend Route
+                        </button>
+                    </form>
+                    <form th:action="@{/operations/routes/{id}/deactivate(id=${route.id})}" 
+                          method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger" 
+                                onclick="return confirm('Are you sure you want to deactivate this route?')">
+                            Deactivate Route
+                        </button>
+                    </form>
+                </div>
+                
+                <div th:if="${route.status == T(com.busSystem.BookingSchedule.model.Route$RouteStatus).SUSPENDED}">
+                    <form th:action="@{/operations/routes/{id}/reactivate(id=${route.id})}" 
+                          method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-success">
+                            Reactivate Route
+                        </button>
+                    </form>
+                    <form th:action="@{/operations/routes/{id}/deactivate(id=${route.id})}" 
+                          method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger" 
+                                onclick="return confirm('Are you sure you want to deactivate this route?')">
+                            Deactivate Route
+                        </button>
+                    </form>
+                </div>
+                
+                <div th:if="${route.status == T(com.busSystem.BookingSchedule.model.Route$RouteStatus).INACTIVE}">
+                    <form th:action="@{/operations/routes/{id}/reactivate(id=${route.id})}" 
+                          method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-success">
+                            Reactivate Route
+                        </button>
+                    </form>
+                </div>
+                
+                <a href="/operations/routes" class="btn btn-secondary">Back to Routes</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

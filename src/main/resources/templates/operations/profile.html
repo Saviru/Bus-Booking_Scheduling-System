@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Profile - Operations Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav {
+            display: flex;
+            gap: 1rem;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav a:hover {
+            background-color: #34495e;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .profile-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .profile-header h2 {
+            margin: 0 0 0.5rem 0;
+            color: #2c3e50;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .profile-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .profile-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        .profile-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .profile-label {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        .profile-value {
+            color: #2c3e50;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status-active {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .status-suspended {
+            color: #f39c12;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Manager Profile</h1>
+        </div>
+        <nav class="nav">
+            <a href="/operations/dashboard">Dashboard</a>
+            <a href="/operations/routes">Routes</a>
+            <a href="/operations/profile">Profile</a>
+            <a href="/operations/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success">
+            <p th:text="${success}"></p>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}"></p>
+        </div>
+        
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <h2 th:text="${manager.fullName}"></h2>
+            <span class="role-badge" th:text="${manager.role}"></span>
+            <p th:text="${manager.department ?: 'Department not specified'}"></p>
+        </div>
+        
+        <!-- Profile Details Grid -->
+        <div class="profile-grid">
+            <!-- Basic Information -->
+            <div class="profile-card">
+                <h3>Basic Information</h3>
+                <div class="profile-item">
+                    <span class="profile-label">Full Name:</span>
+                    <span class="profile-value" th:text="${manager.fullName}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Username:</span>
+                    <span class="profile-value" th:text="${manager.username}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Email:</span>
+                    <span class="profile-value" th:text="${manager.email}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Phone Number:</span>
+                    <span class="profile-value" th:text="${manager.phoneNumber ?: 'Not provided'}"></span>
+                </div>
+            </div>
+            
+            <!-- Professional Information -->
+            <div class="profile-card">
+                <h3>Professional Information</h3>
+                <div class="profile-item">
+                    <span class="profile-label">Employee ID:</span>
+                    <span class="profile-value" th:text="${manager.employeeId ?: 'Not assigned'}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Role:</span>
+                    <span class="profile-value" th:text="${manager.role}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Department:</span>
+                    <span class="profile-value" th:text="${manager.department ?: 'Not specified'}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Status:</span>
+                    <span class="profile-value"
+                          th:class="${'status-' + manager.status.toString().toLowerCase()}"
+                          th:text="${manager.status}"></span>
+                </div>
+            </div>
+            
+            <!-- Account Information -->
+            <div class="profile-card">
+                <h3>Account Information</h3>
+                <div class="profile-item">
+                    <span class="profile-label">Account Created:</span>
+                    <span class="profile-value" th:text="${#temporals.format(manager.createdAt, 'MMM dd, yyyy HH:mm')}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Last Updated:</span>
+                    <span class="profile-value" th:text="${#temporals.format(manager.updatedAt, 'MMM dd, yyyy HH:mm')}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Last Login:</span>
+                    <span class="profile-value" th:text="${manager.lastLogin != null ? #temporals.format(manager.lastLogin, 'MMM dd, yyyy HH:mm') : 'Never'}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Account Status:</span>
+                    <span class="profile-value" 
+                          th:class="${manager.isActive ? 'status-active' : 'status-inactive'}"
+                          th:text="${manager.isActive ? 'Active' : 'Inactive'}"></span>
+                </div>
+            </div>
+            
+            <!-- Activity Summary -->
+            <div class="profile-card">
+                <h3>Activity Summary</h3>
+                <div class="profile-item">
+                    <span class="profile-label">Days Since Joined:</span>
+                    <span class="profile-value" th:text="${#temporals.until(manager.createdAt, #temporals.createNow(), 'DAYS') + ' days'}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Routes Managed:</span>
+                    <span class="profile-value">0</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Last Activity:</span>
+                    <span class="profile-value" th:text="${manager.lastLogin != null ? #temporals.format(manager.lastLogin, 'MMM dd, yyyy') : 'No recent activity'}"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Access Level:</span>
+                    <span class="profile-value" th:text="${manager.role == T(com.busSystem.BookingSchedule.model.OperationsManager$ManagerRole).ADMIN ? 'Administrator' : 'Standard User'}"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="profile-card">
+            <h3>Profile Management</h3>
+            <div class="action-buttons">
+                <a href="/operations/profile/edit" class="btn btn-primary">Edit Profile</a>
+                <a href="/operations/profile/change-password" class="btn btn-warning">Change Password</a>
+                <a href="/operations/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

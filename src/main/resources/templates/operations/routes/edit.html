@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Route - Operations Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav {
+            display: flex;
+            gap: 1rem;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav a:hover {
+            background-color: #34495e;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .help-text {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .required {
+            color: #e74c3c;
+        }
+        .route-info {
+            background-color: #e8f4f8;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #3498db;
+        }
+        .route-info h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .route-code-display {
+            font-family: monospace;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Edit Route</h1>
+        </div>
+        <nav class="nav">
+            <a href="/operations/dashboard">Dashboard</a>
+            <a href="/operations/routes">Routes</a>
+            <a href="/operations/profile">Profile</a>
+            <a href="/operations/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="form-container">
+            <!-- Route Information Display -->
+            <div class="route-info">
+                <h4>Editing Route: <span class="route-code-display" th:text="${route.routeCode}"></span></h4>
+                <p>Created: <span th:text="${#temporals.format(route.createdAt, 'MMM dd, yyyy HH:mm')}"></span></p>
+                <p>Last Updated: <span th:text="${#temporals.format(route.updatedAt, 'MMM dd, yyyy HH:mm')}"></span></p>
+            </div>
+            
+            <div th:if="${error}" class="alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+            
+            <form th:action="@{/operations/routes/{id}/edit(id=${route.id})}" th:object="${route}" method="post">
+                
+                <!-- Hidden ID field -->
+                <input type="hidden" th:field="*{id}">
+                
+                <!-- Basic Route Information -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="routeCode">Route Code <span class="required">*</span></label>
+                        <input type="text" id="routeCode" th:field="*{routeCode}" 
+                               placeholder="e.g., RT001" required>
+                        <div class="help-text">Unique identifier for the route</div>
+                        <div th:if="${#fields.hasErrors('routeCode')}" class="error" 
+                             th:errors="*{routeCode}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" th:field="*{status}">
+                            <option th:each="status : ${statuses}" 
+                                    th:value="${status}" 
+                                    th:text="${status}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Origin and Destination -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="origin">Origin <span class="required">*</span></label>
+                        <input type="text" id="origin" th:field="*{origin}" 
+                               placeholder="e.g., New York" required>
+                        <div th:if="${#fields.hasErrors('origin')}" class="error" 
+                             th:errors="*{origin}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="destination">Destination <span class="required">*</span></label>
+                        <input type="text" id="destination" th:field="*{destination}" 
+                               placeholder="e.g., Boston" required>
+                        <div th:if="${#fields.hasErrors('destination')}" class="error" 
+                             th:errors="*{destination}"></div>
+                    </div>
+                </div>
+                
+                <!-- Distance, Duration, and Fare -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="distance">Distance (km) <span class="required">*</span></label>
+                        <input type="number" id="distance" th:field="*{distance}" 
+                               step="0.1" min="0.1" placeholder="0.0" required>
+                        <div th:if="${#fields.hasErrors('distance')}" class="error" 
+                             th:errors="*{distance}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Duration (minutes) <span class="required">*</span></label>
+                        <input type="number" id="duration" th:field="*{duration}" 
+                               min="1" placeholder="0" required>
+                        <div th:if="${#fields.hasErrors('duration')}" class="error" 
+                             th:errors="*{duration}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="baseFare">Base Fare ($) <span class="required">*</span></label>
+                        <input type="number" id="baseFare" th:field="*{baseFare}" 
+                               step="0.01" min="0.01" placeholder="0.00" required>
+                        <div th:if="${#fields.hasErrors('baseFare')}" class="error" 
+                             th:errors="*{baseFare}"></div>
+                    </div>
+                </div>
+                
+                <!-- Stops -->
+                <div class="form-group">
+                    <label for="stops">Intermediate Stops</label>
+                    <textarea id="stops" th:field="*{stops}" 
+                              placeholder="Enter intermediate stops, one per line or comma-separated"></textarea>
+                    <div class="help-text">Optional: List any stops between origin and destination</div>
+                    <div th:if="${#fields.hasErrors('stops')}" class="error" 
+                         th:errors="*{stops}"></div>
+                </div>
+                
+                <!-- Buttons -->
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Update Route</button>
+                    <a th:href="@{/operations/routes/{id}(id=${route.id})}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Get original values for comparison
+        const originalRouteCode = document.getElementById('routeCode').value;
+        const routeId = /*[[${route.id}]]*/ 0;
+        
+        // Client-side validation for route code
+        document.getElementById('routeCode').addEventListener('blur', function() {
+            const routeCode = this.value.trim();
+            if (routeCode && routeCode !== originalRouteCode) {
+                fetch(`/operations/routes/check-route-code?routeCode=${encodeURIComponent(routeCode)}&excludeId=${routeId}`)
+                    .then(response => response.json())
+                    .then(available => {
+                        if (!available) {
+                            this.style.borderColor = '#e74c3c';
+                            // Show error message
+                            let errorDiv = this.parentNode.querySelector('.error-dynamic');
+                            if (!errorDiv) {
+                                errorDiv = document.createElement('div');
+                                errorDiv.className = 'error error-dynamic';
+                                this.parentNode.appendChild(errorDiv);
+                            }
+                            errorDiv.textContent = 'Route code already exists';
+                        } else {
+                            this.style.borderColor = '#27ae60';
+                            // Remove error message
+                            const errorDiv = this.parentNode.querySelector('.error-dynamic');
+                            if (errorDiv) {
+                                errorDiv.remove();
+                            }
+                        }
+                    });
+            } else if (routeCode === originalRouteCode) {
+                this.style.borderColor = '#ddd';
+                const errorDiv = this.parentNode.querySelector('.error-dynamic');
+                if (errorDiv) {
+                    errorDiv.remove();
+                }
+            }
+        });
+        
+        // Check for conflicting routes
+        function checkConflicts() {
+            const origin = document.getElementById('origin').value.trim();
+            const destination = document.getElementById('destination').value.trim();
+            
+            if (origin && destination && origin !== destination) {
+                fetch(`/operations/routes/check-conflicts?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&excludeId=${routeId}`)
+                    .then(response => response.json())
+                    .then(noConflicts => {
+                        const destinationField = document.getElementById('destination');
+                        if (!noConflicts) {
+                            destinationField.style.borderColor = '#f39c12';
+                            // Show warning
+                            let warningDiv = destinationField.parentNode.querySelector('.warning-dynamic');
+                            if (!warningDiv) {
+                                warningDiv = document.createElement('div');
+                                warningDiv.className = 'help-text warning-dynamic';
+                                warningDiv.style.color = '#f39c12';
+                                destinationField.parentNode.appendChild(warningDiv);
+                            }
+                            warningDiv.textContent = 'Another route with this origin and destination exists';
+                        } else {
+                            destinationField.style.borderColor = '#ddd';
+                            const warningDiv = destinationField.parentNode.querySelector('.warning-dynamic');
+                            if (warningDiv) {
+                                warningDiv.remove();
+                            }
+                        }
+                    });
+            }
+        }
+        
+        document.getElementById('origin').addEventListener('blur', checkConflicts);
+        document.getElementById('destination').addEventListener('blur', checkConflicts);
+        
+        // Calculate average speed when distance or duration changes
+        function updateAverageSpeed() {
+            const distance = parseFloat(document.getElementById('distance').value);
+            const duration = parseInt(document.getElementById('duration').value);
+            
+            if (distance > 0 && duration > 0) {
+                const avgSpeed = (distance * 60 / duration).toFixed(1);
+                // You could display this somewhere if needed
+                console.log(`Average speed: ${avgSpeed} km/h`);
+            }
+        }
+        
+        document.getElementById('distance').addEventListener('input', updateAverageSpeed);
+        document.getElementById('duration').addEventListener('input', updateAverageSpeed);
+    </script>
+</body>
+</html>
