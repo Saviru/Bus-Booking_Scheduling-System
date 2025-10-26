@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: bus_booking_mysql
+    environment:
+      MYSQL_DATABASE: bus_booking_system
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3308:3308"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sample_data.sql:/docker-entrypoint-initdb.d/sample_data.sql
+    networks:
+      - bus_booking_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p12345678"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bus_booking_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/bus_booking_system
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 12345678
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - bus_booking_network
+    restart: on-failure
+
+networks:
+  bus_booking_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+
