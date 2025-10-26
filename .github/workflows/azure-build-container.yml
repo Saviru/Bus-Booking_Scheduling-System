@@ -11,36 +11,6 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v2
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2.0.2
-      with:
-        terraform_version: latest
-        cli_config_credentials_token: ${{ secrets.TFC_TOKEN_ID }}
-
-    - name: Terraform Init
-      id: init
-      run: terraform -chdir="./iac" init
-
-    - name: Terraform Validate
-      id: validate
-      run: terraform -chdir="./iac" validate
-
-    - name: Terraform Plan
-      id: plan
-      run: terraform -chdir="./iac" plan
-      continue-on-error: true
-
-    - name: Terraform Plan Status
-      if: steps.plan.outcome == 'failure'
-      run: exit 1
-
-    - name: Terraform Apply
-      run: terraform -chdir="./iac" apply -auto-approve
-
-    - name: Terraform Output
-      run: terraform output
-
     - uses: azure/docker-login@v1
       with:
         login-server: buswebapp-a8a8ehh4dahnd3dr.azurecr.io
