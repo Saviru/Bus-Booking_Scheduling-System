@@ -60,6 +60,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.5.4</version>
+                <configuration>
+                    <mainClass>com.busSystem.BookingScheduleApplication</mainClass>
+                </configuration>
+
             </plugin>
         </plugins>
     </build>
