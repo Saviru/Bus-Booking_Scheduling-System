@@ -61,13 +61,15 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then\n\
     mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null\n\
 fi\n\
 \n\
-# Start MySQL\n\
-mysqld --user=mysql --skip-networking &\n\
+# Start MySQL with networking\n\
+mysqld --user=mysql --bind-address=127.0.0.1 &\n\
 MYSQL_PID=$!\n\
 \n\
 # Wait for MySQL to be ready\n\
+echo "Waiting for MySQL to start..."\n\
 for i in $(seq 30 -1 0); do\n\
-    if mysqladmin ping --socket=/run/mysqld/mysqld.sock --silent 2>/dev/null; then\n\
+    if mysqladmin ping -h 127.0.0.1 --silent 2>/dev/null; then\n\
+        echo "MySQL is ready!"\n\
         break\n\
     fi\n\
     sleep 1\n\
@@ -78,22 +80,19 @@ if [ "$i" = "0" ]; then\n\
     exit 1\n\
 fi\n\
 \n\
-# Set root password and configure\n\
-mysql --socket=/run/mysqld/mysqld.sock <<-EOSQL\n\
-ALTER USER "root"@"localhost" IDENTIFIED BY "12345678";\n\
-FLUSH PRIVILEGES;\n\
+# Set root password and run sample data\n\
+mysql -h 127.0.0.1 -u root <<-EOSQL\n\
+    ALTER USER "root"@"localhost" IDENTIFIED BY "12345678";\n\
+    CREATE USER IF NOT EXISTS "root"@"127.0.0.1" IDENTIFIED BY "12345678";\n\
+    GRANT ALL PRIVILEGES ON *.* TO "root"@"127.0.0.1" WITH GRANT OPTION;\n\
+    FLUSH PRIVILEGES;\n\
 EOSQL\n\
 \n\
 # Run sample data SQL\n\
-mysql --socket=/run/mysqld/mysqld.sock -u root -p12345678 < /app/sample_data.sql\n\
+mysql -h 127.0.0.1 -u root -p12345678 < /app/sample_data.sql\n\
 \n\
-# Enable networking for MySQL\n\
-kill $MYSQL_PID\n\
-wait $MYSQL_PID\n\
-mysqld --user=mysql &\n\
-\n\
-# Wait for MySQL to restart\n\
-sleep 3\n\
+echo "Database initialized successfully!"\n\
+echo "Starting Spring Boot application..."\n\
 \n\
 # Start Spring Boot with memory constraints\n\
 exec java -Xms64m -Xmx200m -XX:+UseSerialGC -XX:MaxMetaspaceSize=64m \\\n\
