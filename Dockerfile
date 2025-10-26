@@ -56,42 +56,66 @@ COPY sample_data.sql /app/sample_data.sql
 RUN printf '#!/bin/bash\n\
 set -e\n\
 \n\
-# Initialize MySQL if not initialized\n\
+# Create necessary directories\n\
+mkdir -p /var/lib/mysql /var/run/mysqld /tmp\n\
+chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\n\
+chmod 777 /tmp\n\
+\n\
+# Initialize MariaDB if not initialized\n\
 if [ ! -d "/var/lib/mysql/mysql" ]; then\n\
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null\n\
+    echo "Initializing MariaDB database..."\n\
+    mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db 2>&1\n\
+    if [ $? -ne 0 ]; then\n\
+        echo "Failed to initialize MariaDB"\n\
+        exit 1\n\
+    fi\n\
+    echo "MariaDB initialized successfully"\n\
 fi\n\
 \n\
-# Start MySQL with networking\n\
-mysqld --user=mysql --bind-address=127.0.0.1 &\n\
+# Start MariaDB in safe mode for initialization\n\
+echo "Starting MariaDB server..."\n\
+mariadbd --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --port=3306 2>&1 &\n\
 MYSQL_PID=$!\n\
+sleep 2\n\
 \n\
-# Wait for MySQL to be ready\n\
-echo "Waiting for MySQL to start..."\n\
-for i in $(seq 30 -1 0); do\n\
-    if mysqladmin ping -h 127.0.0.1 --silent 2>/dev/null; then\n\
-        echo "MySQL is ready!"\n\
-        break\n\
-    fi\n\
-    sleep 1\n\
-done\n\
-\n\
-if [ "$i" = "0" ]; then\n\
-    echo "MySQL failed to start"\n\
+# Check if MariaDB process is running\n\
+if ! ps -p $MYSQL_PID > /dev/null; then\n\
+    echo "ERROR: MariaDB process died immediately after starting"\n\
     exit 1\n\
 fi\n\
 \n\
-# Set root password and run sample data\n\
-mysql -h 127.0.0.1 -u root <<-EOSQL\n\
-    ALTER USER "root"@"localhost" IDENTIFIED BY "12345678";\n\
-    CREATE USER IF NOT EXISTS "root"@"127.0.0.1" IDENTIFIED BY "12345678";\n\
-    GRANT ALL PRIVILEGES ON *.* TO "root"@"127.0.0.1" WITH GRANT OPTION;\n\
+# Wait for MariaDB to be ready\n\
+echo "Waiting for MariaDB to accept connections..."\n\
+RETRIES=60\n\
+until mariadb-admin ping --silent 2>/dev/null || [ $RETRIES -eq 0 ]; do\n\
+    echo "Waiting for MariaDB... ($RETRIES attempts remaining)"\n\
+    RETRIES=$((RETRIES-1))\n\
+    sleep 2\n\
+done\n\
+\n\
+if [ $RETRIES -eq 0 ]; then\n\
+    echo "ERROR: MariaDB failed to start within timeout period"\n\
+    echo "Checking MariaDB process status:"\n\
+    ps aux | grep maria || true\n\
+    exit 1\n\
+fi\n\
+\n\
+echo "MariaDB is ready and accepting connections!"\n\
+\n\
+# Set root password and create user\n\
+echo "Configuring MariaDB users and permissions..."\n\
+mariadb -u root <<-EOSQL 2>&1\n\
+    SET PASSWORD FOR "root"@"localhost" = PASSWORD("12345678");\n\
+    CREATE USER IF NOT EXISTS "root"@"%" IDENTIFIED BY "12345678";\n\
+    GRANT ALL PRIVILEGES ON *.* TO "root"@"%" WITH GRANT OPTION;\n\
     FLUSH PRIVILEGES;\n\
 EOSQL\n\
 \n\
 # Run sample data SQL\n\
-mysql -h 127.0.0.1 -u root -p12345678 < /app/sample_data.sql\n\
+echo "Loading sample data into database..."\n\
+mariadb -u root -p12345678 < /app/sample_data.sql 2>&1\n\
 \n\
-echo "Database initialized successfully!"\n\
+echo "Database setup completed successfully!"\n\
 echo "Starting Spring Boot application..."\n\
 \n\
 # Start Spring Boot with memory constraints\n\
