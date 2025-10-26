@@ -1,23 +1,47 @@
 # Stage 1: Build the application
-FROM maven:3.9-eclipse-temurin-21 AS build
+FROM maven:3.9-eclipse-temurin-21-alpine AS build
 
 WORKDIR /app
 
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
+RUN mvn dependency:go-offline -B && \
+    rm -rf /root/.m2/repository/org/apache/maven
 
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests && \
+    rm -rf /root/.m2
 
-# Stage 2: Runtime with MySQL and Java
-FROM ubuntu:22.04
+# Stage 2: Minimal runtime with MySQL and Java
+FROM alpine:3.19
 
-# Install MySQL, JDK and other dependencies
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    mysql-server \
-    openjdk-21-jre \
-    && rm -rf /var/lib/apt/lists/*
+# Install minimal MySQL, JDK and dependencies
+RUN apk add --no-cache \
+    mariadb mariadb-client \
+    openjdk21-jre-headless \
+    bash \
+    && rm -rf /var/cache/apk/* \
+    && mkdir -p /run/mysqld \
+    && chown mysql:mysql /run/mysqld
+
+# Configure MySQL for low memory usage
+RUN mkdir -p /etc/mysql/conf.d && \
+    echo '[mysqld]\n\
+skip-name-resolve\n\
+innodb_buffer_pool_size=32M\n\
+innodb_log_buffer_size=4M\n\
+query_cache_size=0\n\
+query_cache_type=0\n\
+key_buffer_size=8M\n\
+thread_stack=256K\n\
+max_connections=20\n\
+table_open_cache=32\n\
+sort_buffer_size=256K\n\
+read_buffer_size=256K\n\
+read_rnd_buffer_size=256K\n\
+max_heap_table_size=8M\n\
+tmp_table_size=8M\n\
+performance_schema=OFF\n\
+' > /etc/mysql/conf.d/low-memory.cnf
 
 # Set working directory
 WORKDIR /app
@@ -32,30 +56,53 @@ COPY sample_data.sql /app/sample_data.sql
 RUN echo '#!/bin/bash\n\
 set -e\n\
 \n\
+# Initialize MySQL if not initialized\n\
+if [ ! -d "/var/lib/mysql/mysql" ]; then\n\
+    mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null\n\
+fi\n\
+\n\
 # Start MySQL\n\
-service mysql start\n\
+mysqld --user=mysql --skip-networking &\n\
+MYSQL_PID=$!\n\
 \n\
 # Wait for MySQL to be ready\n\
-until mysqladmin ping -h localhost --silent; do\n\
-    echo "Waiting for MySQL..."\n\
-    sleep 2\n\
+for i in {30..0}; do\n\
+    if mysqladmin ping --socket=/run/mysqld/mysqld.sock --silent; then\n\
+        break\n\
+    fi\n\
+    sleep 1\n\
 done\n\
 \n\
-# Set root password and create database\n\
-mysql -u root <<-EOSQL\n\
+if [ "$i" = 0 ]; then\n\
+    echo "MySQL failed to start"\n\
+    exit 1\n\
+fi\n\
+\n\
+# Set root password and configure\n\
+mysql --socket=/run/mysqld/mysqld.sock <<-EOSQL\n\
     ALTER USER "root"@"localhost" IDENTIFIED BY "12345678";\n\
     FLUSH PRIVILEGES;\n\
 EOSQL\n\
 \n\
 # Run sample data SQL\n\
-mysql -u root -p12345678 < /app/sample_data.sql\n\
+mysql --socket=/run/mysqld/mysqld.sock -u root -p12345678 < /app/sample_data.sql\n\
 \n\
-# Start Spring Boot application\n\
-export SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/bus_booking_system\n\
-export SPRING_DATASOURCE_USERNAME=root\n\
-export SPRING_DATASOURCE_PASSWORD=12345678\n\
+# Enable networking for MySQL\n\
+kill $MYSQL_PID\n\
+wait $MYSQL_PID\n\
+mysqld --user=mysql &\n\
 \n\
-java -jar /app/app.jar\n\
+# Wait for MySQL to restart\n\
+sleep 3\n\
+\n\
+# Start Spring Boot with memory constraints\n\
+exec java -Xms64m -Xmx200m -XX:+UseSerialGC -XX:MaxMetaspaceSize=64m \\\n\
+    -Dspring.datasource.url=jdbc:mysql://localhost:3306/bus_booking_system \\\n\
+    -Dspring.datasource.username=root \\\n\
+    -Dspring.datasource.password=12345678 \\\n\
+    -Dspring.jpa.hibernate.ddl-auto=none \\\n\
+    -Dlogging.level.root=WARN \\\n\
+    -jar /app/app.jar\n\
 ' > /start.sh && chmod +x /start.sh
 
 # Expose ports
