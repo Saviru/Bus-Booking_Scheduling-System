@@ -1,0 +1,7 @@
+FROM mysql:8.0
+
+# Copy the sample data SQL file
+COPY sample_data.sql /docker-entrypoint-initdb.d/
+
+# Expose MySQL port
+EXPOSE 3306
