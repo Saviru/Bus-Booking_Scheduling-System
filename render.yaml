@@ -1,0 +1,24 @@
+services:
+  # Spring Boot Application
+  - type: web
+    name: bus-booking-app
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: bus-booking-mysql
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: bus-booking-mysql
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: bus-booking-mysql
+          property: password
+
+databases:
+  - name: bus-booking-mysql
+    databaseName: bus_booking_system
+    user: root
