@@ -1,31 +1,34 @@
-# Use Maven image to build the application
-FROM maven:3.9-eclipse-temurin-21 AS build
+# Use Docker-in-Docker with docker-compose
+FROM docker:24-dind
+
+# Install docker-compose
+RUN apk add --no-cache docker-compose
 
 # Set working directory
 WORKDIR /app
 
-# Copy pom.xml and download dependencies
+# Copy docker-compose file and all necessary files
+COPY docker-compose.yml .
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# Copy source code
 COPY src ./src
+COPY sample_data.sql .
 
-# Build the application
-RUN mvn clean package -DskipTests
+# Create a Dockerfile for the app service
+COPY Dockerfile.app ./Dockerfile
 
-# Use JDK 21 for runtime
-FROM eclipse-temurin:21-jre
-
-# Set working directory
-WORKDIR /app
-
-# Copy the built jar from build stage
-COPY --from=build /app/target/BookingSchedule-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose port 8080
+# Expose port 8080 for the application
 EXPOSE 8080
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Expose port 3306 for MySQL
+EXPOSE 3306
+
+# Create startup script
+RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'dockerd &' >> /start.sh && \
+    echo 'sleep 5' >> /start.sh && \
+    echo 'docker-compose up --build' >> /start.sh && \
+    chmod +x /start.sh
+
+# Run the startup script
+ENTRYPOINT ["/start.sh"]
 
