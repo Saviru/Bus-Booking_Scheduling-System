@@ -53,7 +53,7 @@ COPY --from=build /app/target/BookingSchedule-0.0.1-SNAPSHOT.jar app.jar
 COPY sample_data.sql /app/sample_data.sql
 
 # Create startup script
-RUN echo '#!/bin/bash\n\
+RUN printf '#!/bin/bash\n\
 set -e\n\
 \n\
 # Initialize MySQL if not initialized\n\
@@ -66,22 +66,22 @@ mysqld --user=mysql --skip-networking &\n\
 MYSQL_PID=$!\n\
 \n\
 # Wait for MySQL to be ready\n\
-for i in {30..0}; do\n\
-    if mysqladmin ping --socket=/run/mysqld/mysqld.sock --silent; then\n\
+for i in $(seq 30 -1 0); do\n\
+    if mysqladmin ping --socket=/run/mysqld/mysqld.sock --silent 2>/dev/null; then\n\
         break\n\
     fi\n\
     sleep 1\n\
 done\n\
 \n\
-if [ "$i" = 0 ]; then\n\
+if [ "$i" = "0" ]; then\n\
     echo "MySQL failed to start"\n\
     exit 1\n\
 fi\n\
 \n\
 # Set root password and configure\n\
 mysql --socket=/run/mysqld/mysqld.sock <<-EOSQL\n\
-    ALTER USER "root"@"localhost" IDENTIFIED BY "12345678";\n\
-    FLUSH PRIVILEGES;\n\
+ALTER USER "root"@"localhost" IDENTIFIED BY "12345678";\n\
+FLUSH PRIVILEGES;\n\
 EOSQL\n\
 \n\
 # Run sample data SQL\n\
@@ -102,12 +102,11 @@ exec java -Xms64m -Xmx200m -XX:+UseSerialGC -XX:MaxMetaspaceSize=64m \\\n\
     -Dspring.datasource.password=12345678 \\\n\
     -Dspring.jpa.hibernate.ddl-auto=none \\\n\
     -Dlogging.level.root=WARN \\\n\
-    -jar /app/app.jar\n\
-' > /start.sh && chmod +x /start.sh
+    -jar /app/app.jar\n' > /start.sh && chmod +x /start.sh
 
 # Expose ports
 EXPOSE 8080 3306
 
 # Run the startup script
-CMD ["/start.sh"]
+CMD ["/bin/bash", "/start.sh"]
 
