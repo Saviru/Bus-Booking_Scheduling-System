@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Ticket - EZBus Ticketing</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/ticketing.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<bodyh43>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>EZBus Ticketing</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing/tickets" class="nav-link active">Tickets</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing/fares" class="nav-link">Fares</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <section class="hero" style="min-height: 25vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Edit Ticket</span></h1>
+                <p>Update passenger ticket details</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container glassify">
+                <!-- Alert Messages -->
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span th:text="${errorMessage}"></span>
+                </div>
+
+                <!-- Current Ticket Information -->
+                <div class="alert alert-info" style="margin-bottom: 30px;">
+                    <h6><i class="fas fa-info-circle"></i> Current Ticket Information</h6>
+                    <div class="info-grid">
+                        <div>
+                            <p style="margin-bottom: 5px;"><strong>Route ID:</strong> <span th:text="${booking.routeId}"></span></p>
+                            <p style="margin-bottom: 5px;"><strong>Schedule ID:</strong> <span th:text="${booking.scheduleId}"></span></p>
+                            <p style="margin-bottom: 0;"><strong>Ticket Type:</strong> <span th:text="${booking.ticketType}"></span></p>
+                        </div>
+                        <div>
+                            <p style="margin-bottom: 5px;"><strong>Fare Amount:</strong> $<span th:text="${#numbers.formatDecimal(booking.fareAmount, 1, 2)}"></span></p>
+                            <p style="margin-bottom: 5px;"><strong>Discount:</strong> $<span th:text="${#numbers.formatDecimal(booking.discountApplied, 1, 2)}"></span></p>
+                            <p style="margin-bottom: 0;"><strong>Final Amount:</strong> $<span th:text="${#numbers.formatDecimal(booking.finalAmount, 1, 2)}"></span></p>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 0; margin-top: 10px;"><strong>Booking Date:</strong> <span th:text="${#temporals.format(booking.bookingDate, 'MMM dd, yyyy HH:mm')}"></span></p>
+                </div>
+
+                <form th:action="@{/ticketing/tickets/{id}(id=${booking.id})}" method="post" id="ticketForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="passengerId">
+                                <i class="fas fa-user"></i> Select Passenger *
+                            </label>
+                            <select id="passengerId" name="passengerId" required>
+                                <option value="">Choose passenger...</option>
+                                <option th:each="passenger : ${passengers}"
+                                        th:value="${passenger.id}"
+                                        th:selected="${passenger.id == booking.passengerId}"
+                                        th:text="${passenger.firstName + ' ' + passenger.lastName + ' (' + passenger.email + ')'}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">
+                                <i class="fas fa-info-circle"></i> Status *
+                            </label>
+                            <select id="status" name="status" required>
+                                <option value="CONFIRMED" th:selected="${booking.status == 'CONFIRMED'}">Confirmed</option>
+                                <option value="BOOKED" th:selected="${booking.status == 'BOOKED'}">Booked</option>
+                                <option value="CANCELLED" th:selected="${booking.status == 'CANCELLED'}">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="travelDate">
+                                <i class="fas fa-calendar"></i> Travel Date & Time *
+                            </label>
+                            <input type="datetime-local" id="travelDate" name="travelDate"
+                                   th:value="${#temporals.format(booking.travelDate, 'yyyy-MM-dd''T''HH:mm')}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="seatNumber">
+                                <i class="fas fa-chair"></i> Available Seats *
+                            </label>
+                            <select id="seatNumber" name="seatNumber" required>
+                                <option value="">Loading available seats...</option>
+                            </select>
+                            <small style="color: var(--text-secondary); display: block; margin-top: 5px;">
+                                <span class="text-muted">Current seat: <strong th:text="${booking.seatNumber}"></strong></span> |
+                                <span id="seatStatus" style="color: #2196F3;">Loading...</span>
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="specialRequests">
+                            <i class="fas fa-comment"></i> Special Requests
+                        </label>
+                        <textarea id="specialRequests" name="specialRequests" rows="3"
+                                  placeholder="Any special requests or notes for this ticket..."
+                                  th:text="${booking.specialRequests}"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="/ticketing/tickets" class="btn-secondary glassify">
+                            <i class="fas fa-arrow-left"></i> Back to Tickets
+                        </a>
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Update Ticket
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set minimum date to today for travel date
+            const travelDateInput = document.getElementById('travelDate');
+            const today = new Date().toISOString().slice(0, 16);
+            travelDateInput.setAttribute('min', today);
+
+            // Get booking data from Thymeleaf
+            const scheduleId = /*[[${booking.scheduleId}]]*/ null;
+            const bookingId = /*[[${booking.id}]]*/ null;
+            const currentSeat = /*[[${booking.seatNumber}]]*/ null;
+
+            const seatSelect = document.getElementById('seatNumber');
+            const seatStatus = document.getElementById('seatStatus');
+
+            function loadAvailableSeats() {
+                const travelDate = travelDateInput.value;
+
+                if (scheduleId && travelDate) {
+                    seatStatus.textContent = 'Loading available seats...';
+                    seatStatus.style.color = '#2196F3';
+
+                    // Format the travel date for the API call
+                    const formattedDate = travelDate.replace('T', 'T');
+
+                    fetch(`/ticketing/api/available-seats?scheduleId=${scheduleId}&travelDate=${formattedDate}&bookingId=${bookingId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            seatSelect.innerHTML = '<option value="">Choose available seat...</option>';
+
+                            if (data.availableSeats && data.availableSeats.length > 0) {
+                                // Add current seat first if it exists
+                                if (currentSeat) {
+                                    const currentOption = document.createElement('option');
+                                    currentOption.value = currentSeat;
+                                    currentOption.textContent = `Seat ${currentSeat} (Current)`;
+                                    currentOption.selected = true;
+                                    seatSelect.appendChild(currentOption);
+                                }
+
+                                // Add other available seats
+                                data.availableSeats.forEach(seat => {
+                                    if (seat !== currentSeat) {
+                                        const option = document.createElement('option');
+                                        option.value = seat;
+                                        option.textContent = `Seat ${seat}`;
+                                        seatSelect.appendChild(option);
+                                    }
+                                });
+
+                                seatStatus.textContent = `${data.totalAvailable} seats available`;
+                                seatStatus.style.color = '#4CAF50';
+                            } else {
+                                // Only current seat available
+                                if (currentSeat) {
+                                    const currentOption = document.createElement('option');
+                                    currentOption.value = currentSeat;
+                                    currentOption.textContent = `Seat ${currentSeat} (Current)`;
+                                    currentOption.selected = true;
+                                    seatSelect.appendChild(currentOption);
+
+                                    seatStatus.textContent = 'Only current seat available';
+                                    seatStatus.style.color = '#FFA726';
+                                } else {
+                                    seatStatus.textContent = 'No seats available';
+                                    seatStatus.style.color = '#f44336';
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading available seats:', error);
+                            seatStatus.textContent = 'Error loading seats. Please try again.';
+                            seatStatus.style.color = '#f44336';
+
+                            // Fallback to current seat if available
+                            if (currentSeat) {
+                                seatSelect.innerHTML = `<option value="${currentSeat}" selected>Seat ${currentSeat} (Current)</option>`;
+                            }
+                        });
+                } else {
+                    seatStatus.textContent = 'Please select travel date';
+                    seatStatus.style.color = 'var(--text-secondary)';
+                }
+            }
+
+            // Load available seats on page load
+            loadAvailableSeats();
+
+            // Reload seats when travel date changes
+            travelDateInput.addEventListener('change', loadAvailableSeats);
+
+            // Update seat status when seat selection changes
+            seatSelect.addEventListener('change', function() {
+                const selectedSeat = this.value;
+                if (selectedSeat) {
+                    if (selectedSeat === currentSeat) {
+                        seatStatus.innerHTML = seatStatus.innerHTML.replace('Selected', 'Current seat selected');
+                    } else {
+                        seatStatus.innerHTML = seatStatus.innerHTML.replace('available', 'available - New seat selected');
+                    }
+                }
+            });
+        });
+    </script>
+</bodyh43>
+</html>
+

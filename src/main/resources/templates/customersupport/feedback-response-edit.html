@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Feedback Response - EZBus Support</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/customersupport.css}">>
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus Support</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport/complaints" class="nav-link">Complaints</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport/feedbacks" class="nav-link active">Feedbacks</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 25vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Edit Response</span></h1>
+                <p>Update feedback response</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container glassify">
+                <form th:action="@{/customersupport/feedbacks/responses/{responseId}/edit(responseId=${response.id})}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="responseMessage"><i class="fas fa-comment"></i> Response Message</label>
+                            <textarea id="responseMessage" name="responseMessage"
+                                      rows="4" required th:text="${response.responseMessage}"></textarea>
+                        </div>
+
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="internalNotes"><i class="fas fa-sticky-note"></i> Internal Notes</label>
+                            <textarea id="internalNotes" name="internalNotes"
+                                      rows="3" th:text="${response.internalNotes}"></textarea>
+                            <small style="color: var(--text-secondary); display: block; margin-top: 5px;">
+                                <i class="fas fa-info-circle"></i> Internal notes are not visible to customers
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Update Response
+                        </button>
+                        <a th:href="@{/customersupport/feedbacks/{id}(id=${response.feedbackId})}"
+                           class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>
+

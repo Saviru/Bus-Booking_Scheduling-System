@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Feedback - EZBus Support</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/customersupport.css}">>
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus Support</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport/complaints" class="nav-link">Complaints</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport/feedbacks" class="nav-link active">Feedbacks</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 25vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Edit Feedback</span></h1>
+                <p>Update feedback information</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container glassify">
+                <form th:action="@{/customersupport/feedbacks/{id}/edit(id=${feedback.id})}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="title"><i class="fas fa-heading"></i> Subject</label>
+                            <input type="text" id="title" name="title"
+                                   th:value="${feedback.subject}" required>
+                        </div>
+
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="message"><i class="fas fa-align-left"></i> Message</label>
+                            <textarea id="message" name="message"
+                                      rows="4" required th:text="${feedback.message}"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category"><i class="fas fa-tag"></i> Category</label>
+                            <select id="category" name="category" required>
+                                <option value="SERVICE" th:selected="${feedback.category == 'SERVICE'}">Service</option>
+                                <option value="DRIVER" th:selected="${feedback.category == 'DRIVER'}">Driver</option>
+                                <option value="VEHICLE" th:selected="${feedback.category == 'VEHICLE'}">Vehicle</option>
+                                <option value="BOOKING" th:selected="${feedback.category == 'BOOKING'}">Booking</option>
+                                <option value="WEBSITE" th:selected="${feedback.category == 'WEBSITE'}">Website</option>
+                                <option value="GENERAL" th:selected="${feedback.category == 'GENERAL'}">General</option>
+                                <option value="OTHER" th:selected="${feedback.category == 'OTHER'}">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="rating"><i class="fas fa-star"></i> Rating</label>
+                            <select id="rating" name="rating" required>
+                                <option value="1" th:selected="${feedback.rating == 1}">1 - Very Poor</option>
+                                <option value="2" th:selected="${feedback.rating == 2}">2 - Poor</option>
+                                <option value="3" th:selected="${feedback.rating == 3}">3 - Fair</option>
+                                <option value="4" th:selected="${feedback.rating == 4}">4 - Good</option>
+                                <option value="5" th:selected="${feedback.rating == 5}">5 - Excellent</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Update Feedback
+                        </button>
+                        <a th:href="@{/customersupport/feedbacks/{id}(id=${feedback.id})}"
+                           class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>
+

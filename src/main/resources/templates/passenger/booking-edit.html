@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Booking - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/passenger.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Styles are in passenger.css */
+        .seat.current {
+            background-color: #ff9800;
+            border-color: #f57c00;
+        }
+        .info-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--accent-primary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        .info-box strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/passenger" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/bookings" class="nav-link">My Bookings</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/routes" class="nav-link">Routes</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Edit Booking</span></h1>
+                <p>Update your booking details</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+
+            <div class="info-box glassify">
+                <p><strong><i class="fas fa-hashtag"></i> Booking ID:</strong> <span th:text="${booking.id}"></span></p>
+                <p><strong><i class="fas fa-route"></i> Route:</strong> <span th:if="${booking.routeId != null}">Route #<span th:text="${booking.routeId}"></span></span></p>
+                <p><strong><i class="fas fa-chair"></i> Current Seat:</strong> <span th:text="${booking.seatNumber}"></span></p>
+            </div>
+
+            <div class="form-container glassify">
+                <form th:action="@{/passenger/bookings/{id}(id=${booking.id})}" method="post" id="bookingForm">
+                    <div class="form-group">
+                        <label for="travelDate"><i class="fas fa-calendar"></i> Travel Date</label>
+                        <input type="datetime-local" name="travelDate" id="travelDate"
+                               th:value="${#temporals.format(booking.travelDate, 'yyyy-MM-dd''T''HH:mm')}"
+                               required onchange="loadSeats()">
+                    </div>
+
+                    <div class="seat-selection-container" id="seatSelectionContainer" style="display: block;">
+                        <h2 style="text-align: center; color: var(--text-primary);"><i class="fas fa-bus"></i> Select Your Seat</h2>
+
+            <div class="availability-info">
+                <span id="availabilityText">Loading seat availability...</span>
+            </div>
+
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-box" style="background-color: #4CAF50;"></div>
+                                <span>Available</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-box" style="background-color: #ff9800;"></div>
+                                <span>Your Current Seat</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-box" style="background-color: #f44336;"></div>
+                                <span>Booked</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-box" style="background-color: #2196F3;"></div>
+                                <span>New Selection</span>
+                            </div>
+                        </div>
+
+                        <div class="bus-container">
+                            <div class="bus-front"><i class="fas fa-steering-wheel"></i> DRIVER</div>
+                            <div id="seatMap" class="seat-map"></div>
+                        </div>
+
+                        <div class="seat-info" id="seatInfo">
+                            Current seat: <span th:text="${booking.seatNumber}"></span> - Click to select a new seat
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="seatNumber" id="seatNumber" th:value="${booking.seatNumber}" required>
+
+                    <div class="form-group">
+                        <label for="specialRequests"><i class="fas fa-comment"></i> Special Requests</label>
+                        <textarea name="specialRequests" id="specialRequests" rows="3"
+                                  th:text="${booking.specialRequests}"
+                                  placeholder="E.g., Window seat, Extra legroom, etc."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Update Booking
+                        </button>
+                        <a href="/passenger/bookings" class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const scheduleId = /*[[${booking.scheduleId}]]*/ 0;
+    const currentSeatNumber = /*[[${booking.seatNumber}]]*/ '';
+    /*]]>*/
+
+    let selectedSeat = null;
+
+    function loadSeats() {
+        const travelDate = document.getElementById('travelDate').value;
+
+        if (!travelDate) return;
+
+        // Convert datetime-local to date only
+        const dateOnly = travelDate.split('T')[0];
+
+        fetch(`/api/seats/availability?scheduleId=${scheduleId}&travelDate=${dateOnly}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error loading seats: ' + data.error);
+                    return;
+                }
+
+                displayBusSeats(data.totalSeats, data.bookedSeats);
+                updateAvailabilityInfo(data.availableCount, data.bookedCount, data.totalSeats);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load seat availability');
+            });
+    }
+
+    function displayBusSeats(totalSeats, bookedSeats) {
+        const seatMap = document.getElementById('seatMap');
+        seatMap.innerHTML = '';
+
+        // Create bus layout: 2 seats - aisle - 2 seats (like a real bus)
+        let seatNumber = 1;
+        const rows = Math.ceil(totalSeats / 4);
+
+        for (let row = 0; row < rows; row++) {
+            // Left side - 2 seats
+            for (let leftSeat = 0; leftSeat < 2; leftSeat++) {
+                if (seatNumber <= totalSeats) {
+                    createSeat(seatMap, seatNumber, bookedSeats);
+                    seatNumber++;
+                }
+            }
+
+            // Aisle
+            const aisleDiv = document.createElement('div');
+            aisleDiv.className = 'aisle';
+            seatMap.appendChild(aisleDiv);
+
+            // Right side - 2 seats
+            for (let rightSeat = 0; rightSeat < 2; rightSeat++) {
+                if (seatNumber <= totalSeats) {
+                    createSeat(seatMap, seatNumber, bookedSeats);
+                    seatNumber++;
+                }
+            }
+        }
+    }
+
+    function createSeat(container, number, bookedSeats) {
+        const seatDiv = document.createElement('div');
+        seatDiv.className = 'seat';
+        seatDiv.textContent = number;
+        seatDiv.dataset.seatNumber = number;
+
+        // Check if this is the current seat
+        if (String(number) === String(currentSeatNumber)) {
+            seatDiv.classList.add('current');
+            seatDiv.title = 'Seat ' + number + ' - Your current seat';
+            seatDiv.onclick = function() { selectSeat(this); };
+        }
+        // Check if seat is booked by others
+        else if (bookedSeats.includes(String(number))) {
+            seatDiv.classList.add('booked');
+            seatDiv.title = 'Seat ' + number + ' - Already Booked';
+        }
+        // Available seat
+        else {
+            seatDiv.onclick = function() { selectSeat(this); };
+            seatDiv.title = 'Seat ' + number + ' - Click to select';
+        }
+
+        container.appendChild(seatDiv);
+    }
+
+    function selectSeat(seatElement) {
+        // Deselect previous seat (but keep current seat marked)
+        if (selectedSeat && selectedSeat !== seatElement) {
+            selectedSeat.classList.remove('selected');
+            // Restore current seat style if deselecting it
+            if (selectedSeat.dataset.seatNumber === currentSeatNumber) {
+                selectedSeat.classList.add('current');
+            }
+        }
+
+        // Select new seat
+        seatElement.classList.remove('current');
+        seatElement.classList.add('selected');
+        selectedSeat = seatElement;
+
+        // Update hidden input
+        const seatNum = seatElement.dataset.seatNumber;
+        document.getElementById('seatNumber').value = seatNum;
+
+        if (seatNum === currentSeatNumber) {
+            document.getElementById('seatInfo').textContent = '✓ Keeping your current seat: ' + seatNum;
+        } else {
+            document.getElementById('seatInfo').textContent = '✓ New seat selected: ' + seatNum + ' (was: ' + currentSeatNumber + ')';
+        }
+    }
+
+    function updateAvailabilityInfo(available, booked, total) {
+        const text = `Available: ${available} | Booked: ${booked} | Total: ${total}`;
+        document.getElementById('availabilityText').textContent = text;
+    }
+
+    document.getElementById('bookingForm').onsubmit = function(e) {
+        const seatNumber = document.getElementById('seatNumber').value;
+        if (!seatNumber) {
+            e.preventDefault();
+            alert('⚠️ Please select a seat!');
+            return false;
+        }
+        return true;
+    };
+
+    // Load seats on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        loadSeats();
+    });
+</script>
+</body>
+</html>

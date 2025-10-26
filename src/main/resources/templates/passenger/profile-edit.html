@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/passenger.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/passenger" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/bookings" class="nav-link">My Bookings</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/profile" class="nav-link">Profile</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Edit Profile</span></h1>
+                <p>Update your account information and preferences</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container glassify">
+                <form action="/passenger/profile" method="post">
+                    <div class="form-section">
+                        <h2><i class="fas fa-user"></i> Personal Information</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label><i class="fas fa-user-circle"></i> First Name</label>
+                                <input type="text" name="firstName" th:value="${user != null ? user.firstName : ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-user-tag"></i> Last Name</label>
+                                <input type="text" name="lastName" th:value="${user != null ? user.lastName : ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-phone"></i> Phone Number</label>
+                                <input type="text" name="phoneNumber" th:value="${user != null ? user.phoneNumber : ''}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2><i class="fas fa-plane"></i> Travel Preferences</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label><i class="fas fa-chair"></i> Preferred Seat Type</label>
+                                <select name="preferredSeatType">
+                                    <option value="">Select Type</option>
+                                    <option value="WINDOW" th:selected="${profile != null && profile.preferredSeatType == 'WINDOW'}">Window</option>
+                                    <option value="AISLE" th:selected="${profile != null && profile.preferredSeatType == 'AISLE'}">Aisle</option>
+                                    <option value="FRONT" th:selected="${profile != null && profile.preferredSeatType == 'FRONT'}">Front</option>
+                                    <option value="BACK" th:selected="${profile != null && profile.preferredSeatType == 'BACK'}">Back</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-map-marker-alt"></i> Frequent Destinations</label>
+                                <input type="text" name="frequentDestinations" th:value="${profile != null ? profile.frequentDestinations : ''}" placeholder="e.g., Colombo, Kandy">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-credit-card"></i> Payment Methods</label>
+                                <input type="text" name="paymentMethods" th:value="${profile != null ? profile.paymentMethods : ''}" placeholder="e.g., Credit Card, Cash">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-wheelchair"></i> Accessibility Needs</label>
+                                <textarea name="accessibilityNeeds" rows="3" th:text="${profile != null ? profile.accessibilityNeeds : ''}"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-heart"></i> Travel Preferences</label>
+                                <textarea name="travelPreferences" rows="3" th:text="${profile != null ? profile.travelPreferences : ''}"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-user-shield"></i> Emergency Contact Name</label>
+                                <input type="text" name="emergencyContactName" th:value="${profile != null ? profile.emergencyContactName : ''}">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-phone-square"></i> Emergency Contact Phone</label>
+                                <input type="text" name="emergencyContactPhone" th:value="${profile != null ? profile.emergencyContactPhone : ''}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Update Profile
+                        </button>
+                        <a href="/passenger/profile" class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

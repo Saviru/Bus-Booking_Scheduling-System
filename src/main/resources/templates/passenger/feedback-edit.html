@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Feedback - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/passenger.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/passenger" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/feedbacks" class="nav-link">My Feedbacks</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/bookings" class="nav-link">My Bookings</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Edit Feedback</span></h1>
+                <p>Update your feedback details</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container glassify">
+                <form th:action="@{/passenger/feedbacks/{id}(id=${feedback.id})}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label><i class="fas fa-star"></i> Rating</label>
+                            <select name="rating" required>
+                                <option value="">Select Rating</option>
+                                <option value="1" th:selected="${feedback.rating == 1}">★ - Very Poor</option>
+                                <option value="2" th:selected="${feedback.rating == 2}">★★ - Poor</option>
+                                <option value="3" th:selected="${feedback.rating == 3}">★★★ - Average</option>
+                                <option value="4" th:selected="${feedback.rating == 4}">★★★★ - Good</option>
+                                <option value="5" th:selected="${feedback.rating == 5}">★★★★★ - Excellent</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-heading"></i> Subject</label>
+                            <input type="text" name="subject" th:value="${feedback.subject}" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-tag"></i> Category</label>
+                            <select name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="SERVICE" th:selected="${feedback.category == 'SERVICE'}">Service Quality</option>
+                                <option value="BOOKING" th:selected="${feedback.category == 'BOOKING'}">Booking Experience</option>
+                                <option value="DRIVER" th:selected="${feedback.category == 'DRIVER'}">Driver Performance</option>
+                                <option value="VEHICLE" th:selected="${feedback.category == 'VEHICLE'}">Vehicle Condition</option>
+                                <option value="PUNCTUALITY" th:selected="${feedback.category == 'PUNCTUALITY'}">Punctuality</option>
+                                <option value="STAFF" th:selected="${feedback.category == 'STAFF'}">Staff Behavior</option>
+                                <option value="OVERALL" th:selected="${feedback.category == 'OVERALL'}">Overall Experience</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-concierge-bell"></i> Service Type</label>
+                            <select name="serviceType" required>
+                                <option value="">Select Service Type</option>
+                                <option value="REGULAR" th:selected="${feedback.serviceType == 'REGULAR'}">Regular Service</option>
+                                <option value="EXPRESS" th:selected="${feedback.serviceType == 'EXPRESS'}">Express Service</option>
+                                <option value="LUXURY" th:selected="${feedback.serviceType == 'LUXURY'}">Luxury Service</option>
+                                <option value="NIGHT" th:selected="${feedback.serviceType == 'NIGHT'}">Night Service</option>
+                                <option value="INTERCITY" th:selected="${feedback.serviceType == 'INTERCITY'}">Intercity Service</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label><i class="fas fa-align-left"></i> Message</label>
+                            <textarea name="message" rows="6" required th:text="${feedback.message}"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Update Feedback
+                        </button>
+                        <a href="/passenger/feedbacks" class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

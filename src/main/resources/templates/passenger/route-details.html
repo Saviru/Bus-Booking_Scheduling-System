@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Details - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/passenger.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/passenger" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/routes" class="nav-link">Routes</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/bookings" class="nav-link">My Bookings</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Route Details</span></h1>
+                <p>Complete information about this route</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="page-actions">
+                <a href="/passenger/bookings/new" class="btn-primary glassify">
+                    <i class="fas fa-ticket-alt"></i> Book This Route
+                </a>
+                <a href="/passenger/routes" class="btn-secondary glassify">
+                    <i class="fas fa-arrow-left"></i> Back to Routes
+                </a>
+            </div>
+
+            <div class="detail-card glassify">
+                <h2><i class="fas fa-route"></i> Route Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-hashtag"></i> Route ID</span>
+                        <span class="info-value" th:text="${route.id}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-map-marker-alt"></i> Origin</span>
+                        <span class="info-value" th:text="${route.origin}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-flag-checkered"></i> Destination</span>
+                        <span class="info-value" th:text="${route.destination}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-map-signs"></i> Stops</span>
+                        <span class="info-value" th:text="${route.stops}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-ruler"></i> Distance</span>
+                        <span class="info-value" th:text="${route.distance + ' km'}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-clock"></i> Duration</span>
+                        <span class="info-value" th:text="${route.duration + ' minutes'}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-info-circle"></i> Status</span>
+                        <span class="status-badge" 
+                              th:classappend="'status-' + ${#strings.toLowerCase(route.status)}" 
+                              th:text="${route.status}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-card glassify">
+                <h2><i class="fas fa-calendar-alt"></i> Available Schedules</h2>
+                <div class="table-wrapper">
+                    <table class="passenger-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag"></i> Schedule ID</th>
+                                <th><i class="fas fa-clock"></i> Departure Time</th>
+                                <th><i class="fas fa-clock"></i> Arrival Time</th>
+                                <th><i class="fas fa-info-circle"></i> Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="schedule : ${schedules}">
+                                <td th:text="${schedule.id}"></td>
+                                <td th:text="${schedule.departureTime}"></td>
+                                <td th:text="${schedule.arrivalTime}"></td>
+                                <td>
+                                    <span class="status-badge" 
+                                          th:classappend="'status-' + ${#strings.toLowerCase(schedule.status)}" 
+                                          th:text="${schedule.status}"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="detail-card glassify">
+                <h2><i class="fas fa-dollar-sign"></i> Fare Information</h2>
+                <div class="table-wrapper">
+                    <table class="passenger-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-ticket-alt"></i> Ticket Type</th>
+                                <th><i class="fas fa-money-bill"></i> Base Price</th>
+                                <th><i class="fas fa-percent"></i> Discount %</th>
+                                <th><i class="fas fa-tag"></i> Promotion</th>
+                                <th><i class="fas fa-calendar"></i> Valid From</th>
+                                <th><i class="fas fa-calendar-check"></i> Valid To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="fare : ${fares}">
+                                <td th:text="${fare.ticketType}"></td>
+                                <td th:text="'Rs. ' + ${fare.basePrice}"></td>
+                                <td th:text="${fare.discountPercentage + '%'}"></td>
+                                <td th:text="${fare.promotionName}"></td>
+                                <td th:text="${fare.validFrom}"></td>
+                                <td th:text="${fare.validTo}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

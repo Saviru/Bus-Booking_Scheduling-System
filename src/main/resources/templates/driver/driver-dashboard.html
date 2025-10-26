@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/driver.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/driver" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/driver/triplogs" class="nav-link">Trip Logs</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/driver/reports" class="nav-link">Vehicle Reports</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 40vh; padding: 120px 20px 60px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Driver Dashboard</span></h1>
+                <p>Welcome, <span th:text="${userName}">Driver</span>!</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 60px 20px;">
+        <div class="container">
+
+            <!-- Assigned Bus Information -->
+            <div class="info-card glassify featuresAnim" th:if="${assignedBus}">
+                <h3><i class="fas fa-bus" style="color: #667eea;"></i> Your Assigned Bus</h3>
+                <p><strong>Bus Number:</strong> <span th:text="${assignedBus.busNumber}"></span></p>
+                <p><strong>Registration:</strong> <span th:text="${assignedBus.registrationNumber}"></span></p>
+                <p><strong>Type:</strong> <span th:text="${assignedBus.busType}"></span></p>
+                <p><strong>Total Seats:</strong> <span th:text="${assignedBus.totalSeats}"></span></p>
+                <p><strong>Status:</strong> <span th:text="${assignedBus.status}"></span></p>
+            </div>
+
+            <div class="info-card glassify featuresAnim" th:unless="${assignedBus}">
+                <h3><i class="fas fa-exclamation-triangle" style="color: #fb923c;"></i> No Bus Assigned</h3>
+                <p>You don't have a bus assigned yet. Please contact the operations manager.</p>
+            </div>
+
+            <!-- Passenger Statistics -->
+            <div th:if="${totalPassengers != null}" style="margin: 30px 0;">
+                <div class="stat-box glassify featuresAnim">
+                    <h2 th:text="${totalPassengers}">0</h2>
+                    <p>Total Passengers Today</p>
+                </div>
+            </div>
+
+            <!-- Upcoming Schedules -->
+            <div class="info-card glassify featuresAnim" th:if="${upcomingSchedules != null and !upcomingSchedules.isEmpty()}">
+                <h3><i class="fas fa-calendar-check" style="color: #4ade80;"></i> Upcoming Schedules</h3>
+                <ul class="schedule-list">
+                    <li class="schedule-item" th:each="schedule : ${upcomingSchedules}">
+                        <strong>Route:</strong> <span th:text="${schedule.route.origin + ' → ' + schedule.route.destination}"></span><br>
+                        <strong>Departure:</strong> <span th:text="${schedule.departureTime}"></span> |
+                        <strong>Arrival:</strong> <span th:text="${schedule.arrivalTime}"></span><br>
+                        <strong>Distance:</strong> <span th:text="${schedule.route.distance + ' km'}"></span> |
+                        <strong>Duration:</strong> <span th:text="${schedule.route.duration + ' mins'}"></span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="info-card glassify featuresAnim" th:if="${upcomingSchedules == null or upcomingSchedules.isEmpty()}">
+                <h3><i class="fas fa-info-circle" style="color: #4facfe;"></i> No Upcoming Schedules</h3>
+                <p>You don't have any active schedules assigned.</p>
+            </div>
+
+            <div class="section-header" style="margin-top: 60px;">
+                <span class="section-tag">Driver Features</span>
+                <h2>Manage Your <span class="gradient-text">Duties</span></h2>
+            </div>
+
+            <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-top: 40px;">
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>Trip Log Management</h3>
+                    <p>Track and manage your daily trips</p>
+                    <div class="card-actions">
+                        <a href="/driver/triplogs" class="btn-primary glassify">
+                            <i class="fas fa-list"></i> View All Trips
+                        </a>
+                        <a href="/driver/triplogs/new" class="btn-secondary glassify">
+                            <i class="fas fa-plus"></i> Log New Trip
+                        </a>
+                    </div>
+                </div>
+
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Vehicle Reports</h3>
+                    <p>Submit vehicle condition reports</p>
+                    <div class="card-actions">
+                        <a href="/driver/reports" class="btn-primary glassify">
+                            <i class="fas fa-list"></i> View All Reports
+                        </a>
+                        <a href="/driver/reports/new" class="btn-secondary glassify">
+                            <i class="fas fa-plus"></i> Submit New Report
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

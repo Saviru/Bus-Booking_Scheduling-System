@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Management - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/customersupport.css}">>
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus Support</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport/complaints" class="nav-link active">Complaints</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport/feedbacks" class="nav-link">Feedbacks</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Complaint Management</span></h1>
+                <p>View and manage customer complaints</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="filter-section glassify">
+                <h2><i class="fas fa-filter"></i> Filter Complaints</h2>
+                <form method="get" class="filter-form">
+                    <div class="form-group">
+                        <label for="status"><i class="fas fa-info-circle"></i> Status</label>
+                        <select name="status" id="status">
+                            <option value="">All</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="RESOLVED">Resolved</option>
+                            <option value="CLOSED">Closed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="category"><i class="fas fa-tag"></i> Category</label>
+                        <select name="category" id="category">
+                            <option value="">All</option>
+                            <option value="SERVICE">Service</option>
+                            <option value="BOOKING">Booking</option>
+                            <option value="PAYMENT">Payment</option>
+                            <option value="DRIVER">Driver</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="opacity: 0;">Filter</label>
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-search"></i> Apply Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-wrapper glassify">
+                <h2><i class="fas fa-list"></i> Complaints List</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Subject</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="complaint : ${complaints}">
+                            <td th:text="${complaint.id}"></td>
+                            <td th:text="${complaint.subject}"></td>
+                            <td><span class="status-badge" th:text="${complaint.category}"></span></td>
+                            <td>
+                                <span class="status-badge priority-low" th:if="${complaint.priority == 'LOW'}" th:text="${complaint.priority}"></span>
+                                <span class="status-badge priority-medium" th:if="${complaint.priority == 'MEDIUM'}" th:text="${complaint.priority}"></span>
+                                <span class="status-badge priority-high" th:if="${complaint.priority == 'HIGH'}" th:text="${complaint.priority}"></span>
+                            </td>
+                            <td>
+                                <span class="status-badge status-pending" th:if="${complaint.status == 'PENDING'}" th:text="${complaint.status}"></span>
+                                <span class="status-badge status-in-progress" th:if="${complaint.status == 'IN_PROGRESS'}" th:text="${complaint.status}"></span>
+                                <span class="status-badge status-resolved" th:if="${complaint.status == 'RESOLVED'}" th:text="${complaint.status}"></span>
+                                <span class="status-badge status-closed" th:if="${complaint.status == 'CLOSED'}" th:text="${complaint.status}"></span>
+                            </td>
+                            <td th:text="${complaint.createdDate}"></td>
+                            <td>
+                                <a th:href="@{/customersupport/complaints/{id}(id=${complaint.id})}">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center;">
+                <a href="/customersupport" class="btn-secondary glassify">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

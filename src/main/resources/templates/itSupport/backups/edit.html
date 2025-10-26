@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Backup - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/itsupport.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport/users" class="nav-link">Users</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport/backups" class="nav-link">Backups</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Edit Backup Configuration</span></h1>
+                <p>Update backup schedule and settings</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container glassify featuresAnim">
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> <span th:text="${errorMessage}"></span>
+                </div>
+
+                <form th:action="@{/itsupport/backups/edit/{id}(id=${backup.id})}" th:object="${backup}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="backupName"><i class="fas fa-tag"></i>Backup Name *</label>
+                            <input type="text" id="backupName" name="backupName" th:field="*{backupName}" class="form-input" placeholder="Enter backup name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="backupType"><i class="fas fa-database"></i>Backup Type *</label>
+                            <select id="backupType" name="backupType" th:field="*{backupType}" class="form-select" required>
+                                <option value="FULL">Full Backup</option>
+                                <option value="INCREMENTAL">Incremental Backup</option>
+                                <option value="DIFFERENTIAL">Differential Backup</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="schedule"><i class="fas fa-calendar-alt"></i>Schedule *</label>
+                            <select id="schedule" name="schedule" th:field="*{schedule}" class="form-select" required>
+                                <option value="DAILY">Daily</option>
+                                <option value="WEEKLY">Weekly</option>
+                                <option value="MONTHLY">Monthly</option>
+                                <option value="MANUAL">Manual</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="retentionPolicy"><i class="fas fa-clock"></i>Retention Policy *</label>
+                            <select id="retentionPolicy" name="retentionPolicy" th:field="*{retentionPolicy}" class="form-select" required>
+                                <option value="7_DAYS">7 Days</option>
+                                <option value="30_DAYS">30 Days</option>
+                                <option value="90_DAYS">90 Days</option>
+                                <option value="1_YEAR">1 Year</option>
+                                <option value="PERMANENT">Permanent</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="status"><i class="fas fa-info-circle"></i>Status *</label>
+                            <select id="status" name="status" th:field="*{status}" class="form-select" required>
+                                <option value="ACTIVE">Active</option>
+                                <option value="INACTIVE">Inactive</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="FAILED">Failed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Update Backup Configuration
+                        </button>
+                        <button type="reset" class="btn-secondary glassify">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                        <a href="/itsupport/backups" class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

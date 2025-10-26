@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Management - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/operations.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/operations" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/buses" class="nav-link">Buses</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/routes" class="nav-link">Routes</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/schedules" class="nav-link">Schedules</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 35vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Route Management</span></h1>
+                <p>Manage and organize all bus routes</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div th:if="${success}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            </div>
+
+            <div class="page-actions">
+                <a href="/operations/routes/new" class="btn-primary glassify">
+                    <i class="fas fa-plus"></i> Add New Route
+                </a>
+                <a href="/operations" class="btn-secondary glassify">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+
+            <div class="filter-section glassify featuresAnim">
+                <h3><i class="fas fa-filter"></i> Filter & Search Routes</h3>
+                <div class="filter-grid">
+                    <form method="get" class="filter-item">
+                        <label for="status"><i class="fas fa-info-circle"></i> Status</label>
+                        <select name="status" id="status" class="filter-select">
+                            <option value="">All</option>
+                            <option value="ACTIVE" th:selected="${selectedStatus == 'ACTIVE'}">Active</option>
+                            <option value="INACTIVE" th:selected="${selectedStatus == 'INACTIVE'}">Inactive</option>
+                        </select>
+                        <button type="submit" class="btn-primary glassify" style="margin-top: 10px;">
+                            <i class="fas fa-search"></i> Filter
+                        </button>
+                    </form>
+                    
+                    <form method="get" class="filter-item">
+                        <label for="search"><i class="fas fa-search"></i> Search Origin/Destination</label>
+                        <input type="text" name="search" id="search" th:value="${searchTerm}" placeholder="Enter city name" class="filter-input">
+                        <button type="submit" class="btn-primary glassify" style="margin-top: 10px;">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="operations-table-container glassify featuresAnim">
+                <table class="operations-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-map-marker-alt"></i> Origin</th>
+                            <th><i class="fas fa-map-pin"></i> Destination</th>
+                            <th><i class="fas fa-map-signs"></i> Stops</th>
+                            <th><i class="fas fa-road"></i> Distance (km)</th>
+                            <th><i class="fas fa-clock"></i> Duration (min)</th>
+                            <th><i class="fas fa-info-circle"></i> Status</th>
+                            <th><i class="fas fa-cog"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="route : ${routes}">
+                            <td><strong th:text="${route.id}"></strong></td>
+                            <td th:text="${route.origin}"></td>
+                            <td th:text="${route.destination}"></td>
+                            <td th:text="${route.stops}"></td>
+                            <td th:text="${route.distance}"></td>
+                            <td th:text="${route.duration}"></td>
+                            <td>
+                                <span th:class="${'status-badge status-' + route.status.toLowerCase()}" th:text="${route.status}"></span>
+                            </td>
+                            <td>
+                                <div class="action-btns-wrapper">
+                                    <a th:href="@{/operations/routes/{id}/edit(id=${route.id})}" class="action-btn btn-edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a th:href="@{/operations/routes/{id}/delete(id=${route.id})}" 
+                                       class="action-btn btn-delete"
+                                       onclick="return confirm('Are you sure you want to delete this route?')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(routes)}">
+                            <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                                <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 20px; display: block;"></i>
+                                No routes found. Add a new route to get started.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

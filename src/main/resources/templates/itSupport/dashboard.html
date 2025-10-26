@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Support Dashboard - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/itsupport.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .btn-primary, .btn-secondary {
+            margin: 10px;
+        }   
+    </style>
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport/users" class="nav-link">Users</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport/backups" class="nav-link">Backups</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 40vh; padding: 120px 20px 60px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">IT Support Dashboard</span></h1>
+                <p>Manage users, access control, and system backups efficiently</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 60px 20px;">
+        <div class="container">
+            <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>User Management</h3>
+                    <p>View and manage all system users and access control</p>
+                    <div class="card-actions">
+                        <a href="/itsupport/users" class="btn-primary glassify">
+                            <i class="fas fa-list"></i> View All Users
+                        </a>
+                        <a href="/itsupport/users/create" class="btn-secondary glassify">
+                            <i class="fas fa-plus"></i> Add New User
+                        </a>
+                    </div>
+                </div>
+
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Backup Management</h3>
+                    <p>Create and manage system backups and restore points</p>
+                    <div class="card-actions">
+                        <a href="/itsupport/backups" class="btn-primary glassify">
+                            <i class="fas fa-list"></i> View Backups
+                        </a>
+                        <a href="/itsupport/backups/create" class="btn-secondary glassify">
+                            <i class="fas fa-plus"></i> Create Backup
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header" style="margin-top: 80px;">
+                <span class="section-tag">Quick Access</span>
+                <h2>Filter & <span class="gradient-text">Search</span></h2>
+            </div>
+
+            <div class="stats-grid" style="margin-top: 40px;">
+                <div class="feature-card glassify featuresAnim">
+                    <h3><i class="fas fa-user-tie" style="color: #667eea;"></i> Drivers</h3>
+                    <a href="/itsupport/users?role=DRIVER" class="btn-secondary glassify filter-btn">
+                        View Drivers
+                    </a>
+                </div>
+                <div class="feature-card glassify featuresAnim">
+                    <h3><i class="fas fa-ticket-alt" style="color: #f5576c;"></i> Ticketing Officers</h3>
+                    <a href="/itsupport/users?role=TICKETING_OFFICER" class="btn-secondary glassify filter-btn">
+                        View Officers
+                    </a>
+                </div>
+                <div class="feature-card glassify featuresAnim">
+                    <h3><i class="fas fa-check-circle" style="color: #4ade80;"></i> Active Backups</h3>
+                    <a href="/itsupport/backups?status=ACTIVE" class="btn-secondary glassify filter-btn">
+                        View Active
+                    </a>
+                </div>
+                <div class="feature-card glassify featuresAnim">
+                    <h3><i class="fas fa-users-cog" style="color: #4facfe;"></i> Active Users</h3>
+                    <a href="/itsupport/users?status=ACTIVE" class="btn-secondary glassify filter-btn">
+                        View Active
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

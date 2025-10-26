@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Trip Log - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/driver.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/driver" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/driver/triplogs" class="nav-link">Trip Logs</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/driver/reports" class="nav-link">Vehicle Reports</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Add New Trip Log</span></h1>
+                <p>Welcome, <span th:text="${userName}">Driver</span>!</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <!-- Display Assigned Bus Information -->
+            <div class="bus-info glassify" th:if="${assignedBus}">
+                <h3><i class="fas fa-bus"></i> Your Assigned Bus</h3>
+                <p><strong>Bus Number:</strong> <span th:text="${assignedBus.busNumber}"></span></p>
+                <p><strong>Registration:</strong> <span th:text="${assignedBus.registrationNumber}"></span></p>
+                <p><strong>Type:</strong> <span th:text="${assignedBus.busType}"></span></p>
+                <p><strong>Total Seats:</strong> <span th:text="${assignedBus.totalSeats}"></span></p>
+            </div>
+
+            <div class="form-container glassify">
+                <form th:action="@{/driver/triplogs}" th:object="${tripLog}" method="post" id="tripLogForm">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="scheduleSelect">
+                                <i class="fas fa-calendar-alt"></i> Schedule
+                            </label>
+                            <select th:field="*{scheduleId}" required id="scheduleSelect" 
+                                    class="form-select" onchange="handleScheduleChange()">
+                                <option value="">Select Your Assigned Schedule</option>
+                                <option th:each="schedule : ${schedules}"
+                                        th:value="${schedule.id}"
+                                        th:attr="data-route-id=${schedule.route.id}"
+                                        th:text="${schedule.route.origin + ' to ' + schedule.route.destination + ' (' + schedule.departureTime + ' - ' + schedule.arrivalTime + ')'}">Schedule</option>
+                            </select>
+                            <input type="hidden" th:field="*{routeId}" id="routeId" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="startTime">
+                                <i class="fas fa-clock"></i> Start Time
+                            </label>
+                            <input type="datetime-local" th:field="*{startTime}" required id="startTime"
+                                   class="form-input"
+                                   th:min="${#strings.substring(currentDateTime, 0, 16)}"
+                                   onchange="validateStartTime(); calculatePassengerCount();">
+                            <small class="help-text">
+                                <i class="fas fa-exclamation-circle"></i> Must be current time or later
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="endTime">
+                                <i class="fas fa-clock"></i> End Time
+                            </label>
+                            <input type="datetime-local" th:field="*{endTime}" id="endTime" class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>
+                                <i class="fas fa-users"></i> Passenger Count
+                            </label>
+                            <div class="auto-calculated" id="passengerCountDisplay">
+                                <span id="passengerCountText">Select schedule and start time to auto-calculate</span>
+                            </div>
+                            <input type="hidden" th:field="*{passengerCount}" id="passengerCount" required>
+                            <small class="help-text">
+                                <i class="fas fa-check-circle"></i> Automatically calculated from bookings
+                            </small>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="issues">
+                                <i class="fas fa-exclamation-triangle"></i> Issues
+                            </label>
+                            <textarea th:field="*{issues}" id="issues" class="form-textarea" 
+                                      placeholder="Report any issues during the trip (optional)"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Save Trip Log
+                        </button>
+                        <a href="/driver/triplogs" class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const currentDateTime = /*[[${currentDateTime}]]*/ '';
+    /*]]>*/
+
+    function handleScheduleChange() {
+        const scheduleSelect = document.getElementById('scheduleSelect');
+        const selectedOption = scheduleSelect.options[scheduleSelect.selectedIndex];
+
+        if (selectedOption.value) {
+            // Auto-populate route ID from the selected schedule
+            const routeId = selectedOption.getAttribute('data-route-id');
+            document.getElementById('routeId').value = routeId;
+
+            // Recalculate passenger count if start time is already set
+            calculatePassengerCount();
+        } else {
+            document.getElementById('routeId').value = '';
+        }
+    }
+
+    function validateStartTime() {
+        const startTime = document.getElementById('startTime').value;
+        const minDateTime = currentDateTime.substring(0, 16);
+
+        if (startTime && startTime < minDateTime) {
+            alert('⚠️ Start time must be current time or later!');
+            document.getElementById('startTime').value = '';
+            return false;
+        }
+        return true;
+    }
+
+    function calculatePassengerCount() {
+        const scheduleId = document.getElementById('scheduleSelect').value;
+        const startTime = document.getElementById('startTime').value;
+
+        if (!scheduleId || !startTime) {
+            document.getElementById('passengerCountText').textContent = 'Select schedule and start time';
+            return;
+        }
+
+        // Extract date from datetime-local
+        const travelDate = startTime.split('T')[0];
+
+        // Fetch passenger count from API
+        fetch(`/api/seats/availability?scheduleId=${scheduleId}&travelDate=${travelDate}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('passengerCountText').textContent = 'Error: ' + data.error;
+                    return;
+                }
+
+                const passengerCount = data.bookedCount || 0;
+                document.getElementById('passengerCount').value = passengerCount;
+                document.getElementById('passengerCountText').textContent =
+                    `✓ ${passengerCount} passengers (automatically calculated from bookings)`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('passengerCountText').textContent = 'Failed to calculate';
+            });
+    }
+
+    // Validate form before submission
+    document.getElementById('tripLogForm').onsubmit = function(e) {
+        // Validate start time
+        if (!validateStartTime()) {
+            e.preventDefault();
+            return false;
+        }
+
+        const passengerCount = document.getElementById('passengerCount').value;
+        if (!passengerCount || passengerCount === '') {
+            e.preventDefault();
+            alert('⚠️ Please wait for passenger count to be calculated!');
+            return false;
+        }
+
+        const routeId = document.getElementById('routeId').value;
+        if (!routeId) {
+            e.preventDefault();
+            alert('⚠️ Please select a schedule!');
+            return false;
+        }
+
+        return true;
+    };
+
+    // Set initial min attribute on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const startTimeInput = document.getElementById('startTime');
+        if (currentDateTime) {
+            startTimeInput.setAttribute('min', currentDateTime.substring(0, 16));
+        }
+    });
+</script>
+</body>
+</html>

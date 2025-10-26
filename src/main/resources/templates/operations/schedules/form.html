@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${schedule.id != null ? 'Edit Schedule' : 'Create New Schedule'} + ' - EZBus'">Schedule Form - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/operations.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/operations" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/buses" class="nav-link">Buses</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/routes" class="nav-link">Routes</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/schedules" class="nav-link">Schedules</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1" th:text="${schedule.id != null ? 'Edit Schedule' : 'Create New Schedule'}">Create New Schedule</span></h1>
+                <p th:text="${schedule.id != null ? 'Update schedule information' : 'Create a new bus schedule'}">Create a new bus schedule</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container featuresAnim">
+                <form th:action="@{/operations/schedules}" method="post" th:object="${schedule}" id="scheduleForm">
+                    <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{createdDate}">
+                    
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="routeId"><i class="fas fa-route"></i>Route *</label>
+                            <select name="routeId" id="routeId" class="form-select" required>
+                                <option value="">Select Route</option>
+                                <option th:each="route : ${routes}" 
+                                        th:value="${route.id}" 
+                                        th:text="${route.origin + ' - ' + route.destination + ' (' + route.distance + 'km)'}"
+                                        th:selected="${schedule.route != null && schedule.route.id == route.id}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="departureTime"><i class="fas fa-clock"></i>Departure Time *</label>
+                            <input type="time" id="departureTime" th:field="*{departureTime}" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="arrivalTime"><i class="fas fa-clock"></i>Arrival Time *</label>
+                            <input type="time" id="arrivalTime" th:field="*{arrivalTime}" class="form-input" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="busSelect"><i class="fas fa-bus"></i>Bus *</label>
+                            <select th:field="*{busId}" id="busSelect" class="form-select" required onchange="autoAssignStaff()">
+                                <option value="">Select Bus</option>
+                                <option th:each="bus : ${buses}"
+                                        th:value="${bus.id}"
+                                        th:text="${bus.busNumber + ' - ' + bus.busType + ' (' + bus.totalSeats + ' seats)'}"
+                                        th:attr="data-driver-id=${bus.assignedDriverId}, data-officer-id=${bus.assignedTicketingOfficerId}"></option>
+                            </select>
+                            <p class="help-text">
+                                <i class="fas fa-info-circle"></i>
+                                Driver and Ticketing Officer will be auto-assigned from the selected bus
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-user-tie"></i>Driver</label>
+                            <div class="auto-assigned" id="driverDisplay">
+                                <i class="fas fa-robot"></i>
+                                <span id="driverText">Select a bus first</span>
+                            </div>
+                            <input type="hidden" th:field="*{driverId}" id="driverId">
+                            <p class="help-text">
+                                <i class="fas fa-check-circle"></i>
+                                Automatically assigned from bus
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i>Ticketing Officer</label>
+                            <div class="auto-assigned" id="officerDisplay">
+                                <i class="fas fa-robot"></i>
+                                <span id="officerText">Select a bus first</span>
+                            </div>
+                            <input type="hidden" th:field="*{ticketingOfficerId}" id="ticketingOfficerId">
+                            <p class="help-text">
+                                <i class="fas fa-check-circle"></i>
+                                Automatically assigned from bus
+                            </p>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="status"><i class="fas fa-info-circle"></i>Status *</label>
+                            <select id="status" th:field="*{status}" class="form-select" required>
+                                <option value="ACTIVE">Active</option>
+                                <option value="INACTIVE">Inactive</option>
+                                <option value="CANCELLED">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Save Schedule
+                        </button>
+                        <a href="/operations/schedules" class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // Store driver and officer data for lookup
+        const driverMap = {};
+        const officerMap = {};
+
+        // Populate driver map - safely handle null values
+        /*[+
+        var drivers = [[${drivers}]];
+        if (drivers) {
+            drivers.forEach(function(driver) {
+                if (driver && driver.id) {
+                    driverMap[driver.id] = driver.firstName + ' ' + driver.lastName;
+                }
+            });
+        }
+        +]*/
+
+        // Populate officer map - safely handle null values
+        /*[+
+        var officers = [[${ticketingOfficers}]];
+        if (officers) {
+            officers.forEach(function(officer) {
+                if (officer && officer.id) {
+                    officerMap[officer.id] = officer.firstName + ' ' + officer.lastName;
+                }
+            });
+        }
+        +]*/
+
+        function autoAssignStaff() {
+            const busSelect = document.getElementById('busSelect');
+            const selectedOption = busSelect.options[busSelect.selectedIndex];
+
+            if (!selectedOption.value) {
+                document.getElementById('driverText').textContent = 'Select a bus first';
+                document.getElementById('officerText').textContent = 'Select a bus first';
+                return;
+            }
+
+            const driverId = selectedOption.getAttribute('data-driver-id');
+            const officerId = selectedOption.getAttribute('data-officer-id');
+
+            // Set driver
+            if (driverId && driverId !== 'null' && driverId !== '') {
+                document.getElementById('driverId').value = driverId;
+                const driverName = driverMap[driverId] || 'Driver #' + driverId;
+                document.getElementById('driverText').textContent = '✓ ' + driverName;
+            } else {
+                document.getElementById('driverId').value = '';
+                document.getElementById('driverText').textContent = '⚠ No driver assigned to this bus';
+            }
+
+            // Set ticketing officer
+            if (officerId && officerId !== 'null' && officerId !== '') {
+                document.getElementById('ticketingOfficerId').value = officerId;
+                const officerName = officerMap[officerId] || 'Officer #' + officerId;
+                document.getElementById('officerText').textContent = '✓ ' + officerName;
+            } else {
+                document.getElementById('ticketingOfficerId').value = '';
+                document.getElementById('officerText').textContent = '⚠ No ticketing officer assigned to this bus';
+            }
+        }
+
+        // Auto-assign on page load if bus is already selected (edit mode)
+        window.addEventListener('DOMContentLoaded', function() {
+            const busSelect = document.getElementById('busSelect');
+            if (busSelect && busSelect.value) {
+                autoAssignStaff();
+            }
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>

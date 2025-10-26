@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fare Management - EZBus Ticketing</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/ticketing.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>EZBus Ticketing</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing/tickets" class="nav-link">Tickets</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing/fares" class="nav-link active">Fares</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 25vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Fare Management</span></h1>
+                <p>Manage route fares and pricing</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div style="margin-bottom: 20px;">
+                <a href="/ticketing/fares/new" class="btn-primary glassify">
+                    <i class="fas fa-plus"></i> Create New Fare
+                </a>
+            </div>
+
+            <div class="table-wrapper glassify">
+                <h2><i class="fas fa-dollar-sign"></i> Fare Pricing</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Route ID</th>
+                            <th>Ticket Type</th>
+                            <th>Base Price</th>
+                            <th>Discount %</th>
+                            <th>Promotion Name</th>
+                            <th>Valid From</th>
+                            <th>Valid To</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="price : ${fares}">
+                            <td th:text="${price.id}"></td>
+                            <td th:text="${price.routeId}"></td>
+                            <td><span class="status-badge" th:text="${price.ticketType}"></span></td>
+                            <td><strong>$<span th:text="${price.basePrice}"></span></strong></td>
+                            <td th:text="${price.discountPercentage} + '%'"></td>
+                            <td th:text="${price.promotionName}"></td>
+                            <td th:text="${price.validFrom}"></td>
+                            <td th:text="${price.validTo}"></td>
+                            <td>
+                                <span class="status-badge"
+                                      th:classappend="${price.status == 'ACTIVE'} ? 'status-active' : 'status-inactive'"
+                                      th:text="${price.status}"></span>
+                            </td>
+                            <td>
+                                <a th:href="@{/ticketing/fares/edit/{id}(id=${price.id})}" class="btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a th:href="@{/ticketing/fares/delete/{id}(id=${price.id})}"
+                                   onclick="return confirm('Are you sure?')" class="btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

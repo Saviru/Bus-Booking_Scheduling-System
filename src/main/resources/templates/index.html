@@ -1,75 +1,472 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bus Booking & Schedule System</title>
+    <meta name="description" content="Book your bus journey with ease - Experience seamless travel with EZBus">
+    <title>EZBus - Your Smart Travel Companion</title>
 </head>
 <body>
-    <header>
-        <h1>Bus Booking & Schedule System</h1>
-        <nav>
-            <div th:if="${loggedInPassenger == null}">
-                <a href="/login">Login</a>
-                <a href="/register">Register</a>
-            </div>
-            <div th:if="${loggedInPassenger != null}">
-                <span>Welcome, <span th:text="${loggedInPassenger.fullName}"></span>!</span>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/logout">Logout</a>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="#home" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="#routes" class="nav-link">Routes</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="#schedule" class="nav-link">Schedule</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="#about" class="nav-link">About</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="#contact" class="nav-link">Contact</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <button class="btn-login glassify navAnim" id="openLogin">Sign In</button>
+                    <button class="btn-register glassify navAnim" id="openRegister">Sign Up</button>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
             </div>
         </nav>
     </header>
-    
-    <main>
-        <section>
-            <h2>Welcome to Bus Booking System</h2>
-            <p>Book your bus tickets easily and manage your travel preferences.</p>
-            
-            <div th:if="${loggedInPassenger == null}">
-                <h3>New to our service?</h3>
-                <p>Create an account to start booking tickets and manage your travel profile.</p>
-                <a href="/register">Register Now</a>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Book Your Bus Journey</span><br>with Ease & Comfort</h1>
+                <p>Experience seamless travel with our user-friendly platform.</p>
+                <div class="hero-cta">
+                    <button class="btn-primary glassify">
+                        <span>Start Booking</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn-secondary glassify">
+                        <span>Learn More</span>
+                    </button>
+                </div>
+            </div>    
+        </div>
+        <div class="mouse-scroll">
+				<div class="mouse glassify">
+					<div class="wheel glassify"></div>
+				</div>
+			</div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-content glassify">
+                <div class="stat-badge glassify">
+                    <i class="fas fa-star"></i>
+                    <span>Trusted by thousands of travelers</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="500">0</div>
+                        <div class="stat-label">Routes Available</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="10000">0</div>
+                        <div class="stat-label">Happy Travelers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="50">0</div>
+                        <div class="stat-label">Cities Connected</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="24">0</div>
+                        <div class="stat-label">Hours Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="routes">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Features</span>
+                <h2 class="featuresAnim">Why Choose <span class="gradient-text">EZBus</span>?</h2>
+                <p class="section-description">Discover the benefits that make us the preferred choice for thousands of travelers</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon fi1">
+                        <i class="fas fa-clock glassify"></i>
+                    </div>
+                    <h3>Real-time Tracking</h3>
+                    <p>Track your bus in real-time and get live updates on arrival times and delays.</p>
+                </div>
+
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon fi2">
+                        <i class="fas fa-shield-alt glassify"></i>
+                    </div>
+                    <h3>Safe & Secure</h3>
+                    <p>Your payment information is encrypted and secure. Travel with peace of mind.</p>
+                </div>
+
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon fi3">
+                        <i class="fas fa-mobile-alt glassify"></i>
+                    </div>
+                    <h3>Mobile Tickets</h3>
+                    <p>No need for paper tickets. Your mobile ticket is all you need to board.</p>
+                </div>
+
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon fi4">
+                        <i class="fas fa-headset glassify glDrop"></i>
+                    </div>
+                    <h3>24/7 Support</h3>
+                    <p>Our customer support team is available round the clock to assist you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="howto" id="schedule">
+	    <div class="howto-cont glassify">
+            <div class="howworks">
+            <div class="section-header">
+                <span class="section-tag">Simple Process</span>
+                <h1 style="color: rgb(255, 255, 255);">How It Works</h1>
+                <p class="section-description" style="color: #d1d1d1;">Book your tickets in 4 simple steps</p>
+            </div>
+            <br>
+            <div class="steps-container">
+                <div class="step glassify">
+                    <div class="step-number glassify glDrop">1</div>
+                    <div class="step-content">
+                        <h3>Search</h3>
+                        <p>Enter your departure and destination cities with travel dates</p>
+                    </div>
+                </div>
                 
-                <h3>Already have an account?</h3>
-                <p>Login to access your dashboard and manage your bookings.</p>
-                <a href="/login">Login Here</a>
+                <div class="step glassify">
+                    <div class="step-number glassify glDrop">2</div>
+                    <div class="step-content">
+                        <h3>Choose</h3>
+                        <p>Compare prices, timings, and amenities to select your preferred bus</p>
+                    </div>
+                </div>
+                
+                <div class="step glassify">
+                    <div class="step-number glassify glDrop">3</div>
+                    <div class="step-content">
+                        <h3>Book</h3>
+                        <p>Fill in passenger details and make secure payment</p>
+                    </div>
+                </div>
+                
+                <div class="step glassify">
+                    <div class="step-number glassify glDrop">4</div>
+                    <div class="step-content">
+                        <h3>Travel</h3>
+                        <p>Show your mobile ticket and enjoy your comfortable journey</p>
+                    </div>
+                </div>
             </div>
-            
-            <div th:if="${loggedInPassenger != null}">
-                <h3>Quick Actions</h3>
-                <ul>
-                    <li><a href="/dashboard">Go to Dashboard</a></li>
-                    <li><a href="/profile">View Profile</a></li>
-                    <li><a href="/bookings">My Bookings</a></li>
-                    <li><a href="/search">Search Routes</a></li>
-                </ul>
+        </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Testimonials</span>
+                <h2>What Our <span class="gradient-text">Customers</span> Say</h2>
+                <p class="section-description">Real experiences from real travelers</p>
             </div>
-        </section>
-        
-        <section>
-            <h3>Features</h3>
-            <ul>
-                <li>Easy ticket booking</li>
-                <li>Seat selection</li>
-                <li>Payment management</li>
-                <li>Travel preferences</li>
-                <li>Booking history</li>
-                <li>Route search</li>
-            </ul>
-        </section>
-    </main>
-    
-    <footer>
-        <p>&copy; 2025 Bus Booking System. All rights reserved.</p>
+            <div class="testimonials-grid">
+                <div class="testimonial-card glassify">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"EZBus made my journey so convenient! The booking process was smooth and the real-time tracking feature is amazing."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar glassify">JD</div>
+                        <div class="author-info">
+                            <h4>John Doe</h4>
+                            <p>Regular Traveler</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card glassify">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Best bus booking platform I've used. Mobile tickets are so convenient and customer support is excellent!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar glassify">SM</div>
+                        <div class="author-info">
+                            <h4>Sarah Miller</h4>
+                            <p>Business Traveler</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card glassify">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Secure payment and great prices. I always find the best deals here. Highly recommended!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar glassify">RK</div>
+                        <div class="author-info">
+                            <h4>Raj Kumar</h4>
+                            <p>Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <div class="cta-content glassify">
+                <div class="cta-text">
+                    <h2>Ready to Start Your Journey?</h2>
+                    <p>Join thousands of satisfied travelers. Book your next bus trip today!</p>
+                </div>
+                <div class="cta-buttons">
+                    <button class="btn-primary glassify" onclick="window.location.href='register.html'">
+                        <span>Get Started Now</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your trusted travel companion for comfortable and affordable bus journeys.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link glassify"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link glassify"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link glassify"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link glassify"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#routes">Routes</a></li>
+                        <li><a href="#schedule">Schedule</a></li>
+                        <li><a href="#about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-phone"></i> +1 234 567 8900</li>
+                        <li><i class="fas fa-envelope"></i> support@ezbus.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Main St, City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
-    
-    <div th:if="${success}">
-        <p th:text="${success}"></p>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-overlay" id="loginOverlay"></div>
+        <div class="modal-content glassify">
+            <button class="modal-close glassify" id="closeLogin">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <div class="modal-icon glassify">
+                    <i class="fas fa-bus"></i>
+                </div>
+                <h2>Welcome Back</h2>
+                <p>Sign in to continue your journey</p>
+            </div>
+            <form action="/login" method="post" class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input type="email" name="email" id="email" class="form-input glassify" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" class="form-input glassify" placeholder="Enter your password" required>
+                        <button type="button" class="toggle-password" id="toggleLoginPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark glassify"></span>
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+                <button type="submit" value="login" class="btn-submit glassify">
+                    <span>Sign In</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <div th:if="${error}">
+                    <p style="color: red" th:text="${error}"></p>
+                </div>
+                <p class="switch-form">
+                    Don't have an account? <a href="#" id="switchToRegister">Sign Up</a>
+                </p>
+            </form>
+        </div>
     </div>
-    
-    <div th:if="${error}">
-        <p th:text="${error}"></p>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-overlay" id="registerOverlay"></div>
+        <div class="modal-content glassify">
+            <button class="modal-close glassify" id="closeRegister">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <div class="modal-icon glassify">
+                    <i class="fas fa-bus"></i>
+                </div>
+                <h2>Create Account</h2>
+                <p>Join EZBus for seamless travel</p>
+            </div>
+            <form action="/passenger/register" method="post" class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="firstName">
+                        <i class="fas fa-user"></i>
+                        First Name
+                    </label>
+                    <input type="text" name="firstName" id="firstName" class="form-input glassify" placeholder="Enter your first name" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">
+                        <i class="fas fa-user"></i>
+                        Last Name
+                    </label>
+                    <input type="text" name="lastName" id="lastName" class="form-input glassify" placeholder="Enter your last name" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input type="email" name="email" id="registerEmail" class="form-input glassify" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input type="number" name="phoneNumber" id="phoneNumber" class="form-input glassify" placeholder="Enter phone number" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <div class="password-input">
+                        <input type="password" id="registerPassword" class="form-input glassify" placeholder="Create a password" required>
+                        <button type="button" class="toggle-password" id="toggleRegisterPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">
+                        <i class="fas fa-lock"></i>
+                        Confirm Password
+                    </label>
+                    <div class="password-input">
+                        <input type="password" name="password" id="confirmPassword" class="form-input glassify" placeholder="Confirm your password" required>
+                        <button type="button" class="toggle-password" id="toggleConfirmPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <span class="checkmark glassify"></span>
+                        I agree to the <a href="#">Terms & Conditions</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn-submit glassify">
+                    <span>Create Account</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <p class="switch-form">
+                    Already have an account? <a href="#" id="switchToLogin">Sign In</a>
+                </p>
+            </form>
+        </div>
     </div>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
 </body>
 </html>

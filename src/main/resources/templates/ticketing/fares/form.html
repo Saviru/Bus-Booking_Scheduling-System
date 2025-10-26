@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fare Form - EZBus Ticketing</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/ticketing.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>EZBus Ticketing</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing/tickets" class="nav-link">Tickets</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing/fares" class="nav-link active">Fares</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 25vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1" th:text="${fare.id != null ? 'Edit Fare' : 'Create New Fare'}">Fare Form</span></h1>
+                <p>Configure route pricing</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container glassify">
+                <div th:if="${error}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span th:text="${error}"></span>
+                </div>
+
+                <form th:action="@{/ticketing/fares}" th:object="${fare}" method="post">
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div class="form-grid">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="routeId"><i class="fas fa-route"></i> Route *</label>
+                            <select th:field="*{routeId}" id="routeId" required>
+                                <option value="">Select Route</option>
+                                <option th:each="route : ${routes}"
+                                        th:value="${route.id}"
+                                        th:text="${route.origin + ' to ' + route.destination + ' (Distance: ' + route.distance + 'km)'}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ticketType"><i class="fas fa-tag"></i> Ticket Type *</label>
+                            <select th:field="*{ticketType}" id="ticketType" required>
+                                <option value="">Select Type</option>
+                                <option value="REGULAR">Regular</option>
+                                <option value="STUDENT">Student</option>
+                                <option value="SENIOR">Senior</option>
+                                <option value="SEASON">Season Pass</option>
+                                <option value="VIP">VIP</option>
+                                <option value="ECONOMY">Economy</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="basePrice"><i class="fas fa-dollar-sign"></i> Base Price *</label>
+                            <input type="number" step="0.01" th:field="*{basePrice}" id="basePrice" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="discountPercentage"><i class="fas fa-percent"></i> Discount Percentage</label>
+                            <input type="number" step="0.01" th:field="*{discountPercentage}" id="discountPercentage" value="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="promotionName"><i class="fas fa-gift"></i> Promotion Name</label>
+                            <input type="text" th:field="*{promotionName}" id="promotionName">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="validFrom"><i class="fas fa-calendar-alt"></i> Valid From *</label>
+                            <input type="datetime-local" th:field="*{validFrom}" id="validFrom" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="validTo"><i class="fas fa-calendar-check"></i> Valid To *</label>
+                            <input type="datetime-local" th:field="*{validTo}" id="validTo" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="status"><i class="fas fa-info-circle"></i> Status *</label>
+                            <select th:field="*{status}" id="status" required>
+                                <option value="ACTIVE">Active</option>
+                                <option value="INACTIVE">Inactive</option>
+                                <option value="EXPIRED">Expired</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="/ticketing/fares" class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Save Fare
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

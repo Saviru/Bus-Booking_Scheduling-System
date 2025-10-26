@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/itsupport.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport/users" class="nav-link">Users</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport/backups" class="nav-link">Backups</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 35vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">User Management</span></h1>
+                <p>View and manage all system users and access control</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="page-actions">
+                <a href="/itsupport/users/create" class="btn-primary glassify">
+                    <i class="fas fa-plus"></i> Add New User
+                </a>
+                <a href="/itsupport" class="btn-secondary glassify">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+
+            <div class="filter-section glassify featuresAnim">
+                <h2><i class="fas fa-filter"></i> Filter Users</h2>
+                <div class="filter-grid">
+                    <form action="/itsupport/users" method="get" class="filter-item">
+                        <label><i class="fas fa-user-tag"></i> Role:</label>
+                        <select name="role" class="filter-select">
+                <option value="">All Roles</option>
+                <option value="IT_SUPPORT">IT Support</option>
+                <option value="OPERATION_MANAGER">Operation Manager</option>
+                <option value="CUSTOMER_SUPPORT">Customer Support</option>
+                <option value="TICKETING_OFFICER">Ticketing Officer</option>
+                <option value="DRIVER">Driver</option>
+                <option value="PASSENGER">Passenger</option>
+                        </select>
+                        <button type="submit" class="filter-btn"><i class="fas fa-search"></i> Filter by Role</button>
+                    </form>
+                    
+                    <form action="/itsupport/users" method="get" class="filter-item">
+                        <label><i class="fas fa-toggle-on"></i> Status:</label>
+                        <select name="status" class="filter-select">
+                <option value="">All Status</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+                                <option value="SUSPENDED">Suspended</option>
+                        </select>
+                        <button type="submit" class="filter-btn"><i class="fas fa-search"></i> Filter by Status</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="itsupport-table-container glassify featuresAnim">
+                <table class="itsupport-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-envelope"></i> Email</th>
+                            <th><i class="fas fa-user"></i> Name</th>
+                            <th><i class="fas fa-user-tag"></i> Role</th>
+                            <th><i class="fas fa-info-circle"></i> Status</th>
+                            <th><i class="fas fa-phone"></i> Phone</th>
+                            <th><i class="fas fa-cog"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.firstName + ' ' + user.lastName}"></td>
+            <td th:text="${user.role}"></td>
+            <td th:text="${user.status}"></td>
+            <td th:text="${user.phoneNumber}"></td>
+            <td>
+                <div class="action-btns-wrapper">
+                    <a th:href="@{/itsupport/users/view/{id}(id=${user.id})}" class="action-btn btn-edit">View</a>
+                    <a th:href="@{/itsupport/users/edit/{id}(id=${user.id})}" class="action-btn btn-edit">Edit</a>
+                    <a th:href="@{/itsupport/users/delete/{id}(id=${user.id})}" 
+                       class="action-btn btn-delete"
+                       onclick="return confirm('Are you sure?')" >Delete</a>
+                </div>
+            </td>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

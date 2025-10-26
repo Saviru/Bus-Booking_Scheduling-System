@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EzBus</title>
+</head>
+<body>
+<header class="header glass">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo navAnim">
+                <i class="fas fa-bus"></i>
+                <span>EZBus</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item navAnim">
+                    <a href="#home" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item navAnim">
+                    <a th:href="@{index.html}" class="nav-link">Dev</a>
+                </li>
+                <li class="nav-item navAnim">
+                    <a href="#schedule" class="nav-link">Schedule</a>
+                </li>
+                <li class="nav-item navAnim">
+                    <a href="#about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item navAnim">
+                    <a href="#contact" class="nav-link">Contact</a>
+                </li>
+            </ul>
+            <div class="nav-auth navAnim3">
+                <button class="btn-login glass navAnim" onclick="window.location.href='/login'">Sign In</button>
+                <button class="btn-register glass navAnim" onclick="window.location.href='/passenger/register'">Sign Up</button>
+            </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section id="home" class="hero">
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>Book Your Bus Journey with Ease</h1>
+            <p>Experience seamless travel with our user-friendly platform.</p>
+        </div>
+    </div>
+    <div class="mouse-scroll">
+        <div class="mouse glass">
+            <div class="wheel glass"></div>
+        </div>
+        <div class="arrow"></div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <h2 class="featuresAnim">Why Choose EZBus?</h2>
+        <div class="features-grid">
+            <div class="feature-card glass featuresAnim">
+                <div class="feature-icon fi1">
+                    <i class="fas fa-clock glass glDrop"></i>
+                </div>
+                <h3>Real-time Tracking</h3>
+                <p>Track your bus in real-time and get live updates on arrival times and delays.</p>
+            </div>
+
+            <div class="feature-card glass featuresAnim">
+                <div class="feature-icon fi2">
+                    <i class="fas fa-shield-alt glass glDrop"></i>
+                </div>
+                <h3>Safe & Secure</h3>
+                <p>Your payment information is encrypted and secure. Travel with peace of mind.</p>
+            </div>
+
+            <div class="feature-card glass featuresAnim">
+                <div class="feature-icon fi3">
+                    <i class="fas fa-mobile-alt glass glDrop"></i>
+                </div>
+                <h3>Mobile Tickets</h3>
+                <p>No need for paper tickets. Your mobile ticket is all you need to board.</p>
+            </div>
+
+            <div class="feature-card glass featuresAnim">
+                <div class="feature-icon fi4">
+                    <i class="fas fa-headset glass glDrop"></i>
+                </div>
+                <h3>24/7 Support</h3>
+                <p>Our customer support team is available round the clock to assist you.</p>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="howto">
+    <div class="howto-cont glass glDrop">
+        <div class="howworks">
+            <h1 style="color: rgb(255, 255, 255);">How It Works</h1>
+            <br>
+            <div class="steps-container">
+                <div class="step glass">
+                    <div class="step-number glass glDrop">1</div>
+                    <div class="step-content">
+                        <h3>Search</h3>
+                        <p>Enter your departure and destination cities with travel dates</p>
+                    </div>
+                </div>
+
+                <div class="step glass">
+                    <div class="step-number glass glDrop">2</div>
+                    <div class="step-content">
+                        <h3>Choose</h3>
+                        <p>Compare prices, timings, and amenities to select your preferred bus</p>
+                    </div>
+                </div>
+
+                <div class="step glass">
+                    <div class="step-number glass glDrop">3</div>
+                    <div class="step-content">
+                        <h3>Book</h3>
+                        <p>Fill in passenger details and make secure payment</p>
+                    </div>
+                </div>
+
+                <div class="step glass">
+                    <div class="step-number glass glDrop">4</div>
+                    <div class="step-content">
+                        <h3>Travel</h3>
+                        <p>Show your mobile ticket and enjoy your comfortable journey</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<svg style="display:none;">
+    <filter id="displacementFilter">
+        <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="3" result="turbulence" />
+        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="45"
+                           xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+</svg>
+<!--<svg class="filter-svg" style="display: none;">
+    <filter id="blur">
+        <feMorphology in="SourceGraphic" operator="dilate" radius="0"></feMorphology>
+    </filter>
+</svg>
+ <script>
+    const morphology = document.querySelector('feMorphology');
+
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const maxRadius = 20;
+
+    window.addEventListener('scroll', () => {
+        const scrollPercentage = window.scrollY / maxScroll;
+
+        const newRadius = 0 + (scrollPercentage * (maxRadius + 0));
+        morphology.setAttribute('radius', newRadius.toFixed(0));
+    });
+</script>-->
+<script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

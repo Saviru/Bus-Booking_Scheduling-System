@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Bus - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/operations.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/operations" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/buses" class="nav-link">Buses</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/routes" class="nav-link">Routes</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/schedules" class="nav-link">Schedules</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Add New Bus</span></h1>
+                <p>Register a new bus to your fleet</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container featuresAnim">
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> <span th:text="${errorMessage}"></span>
+                </div>
+
+                <form th:action="@{/operations/buses}" th:object="${bus}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="busNumber"><i class="fas fa-hashtag"></i>Bus Number *</label>
+                            <input type="text" id="busNumber" name="busNumber" th:field="*{busNumber}" class="form-input" placeholder="Enter bus number" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="registrationNumber"><i class="fas fa-id-card"></i>Registration Number *</label>
+                            <input type="text" id="registrationNumber" name="registrationNumber" th:field="*{registrationNumber}" class="form-input" placeholder="Enter registration number" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="busType"><i class="fas fa-tag"></i>Bus Type *</label>
+                            <select id="busType" name="busType" th:field="*{busType}" class="form-select" required>
+                                <option value="">Select Type</option>
+                                <option value="STANDARD">Standard</option>
+                                <option value="LUXURY">Luxury</option>
+                                <option value="SLEEPER">Sleeper</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="totalSeats"><i class="fas fa-chair"></i>Total Seats *</label>
+                            <input type="number" id="totalSeats" name="totalSeats" th:field="*{totalSeats}" value="60" class="form-input" placeholder="Enter total seats" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="assignedDriverId"><i class="fas fa-user-tie"></i>Assign Driver</label>
+                            <select id="assignedDriverId" name="assignedDriverId" th:field="*{assignedDriverId}" class="form-select">
+                                <option value="">Select Driver</option>
+                                <option th:each="driver : ${drivers}"
+                                        th:value="${driver.id}"
+                                        th:text="${driver.firstName + ' ' + driver.lastName + ' (' + driver.email + ')'}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="assignedTicketingOfficerId"><i class="fas fa-user"></i>Assign Ticketing Officer</label>
+                            <select id="assignedTicketingOfficerId" name="assignedTicketingOfficerId" th:field="*{assignedTicketingOfficerId}" class="form-select">
+                                <option value="">Select Ticketing Officer</option>
+                                <option th:each="officer : ${ticketingOfficers}"
+                                        th:value="${officer.id}"
+                                        th:text="${officer.firstName + ' ' + officer.lastName + ' (' + officer.email + ')'}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="status"><i class="fas fa-info-circle"></i>Status *</label>
+                            <select id="status" name="status" th:field="*{status}" class="form-select" required>
+                                <option value="ACTIVE">Active</option>
+                                <option value="INACTIVE">Inactive</option>
+                                <option value="MAINTENANCE">Maintenance</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="notes"><i class="fas fa-sticky-note"></i>Notes</label>
+                            <textarea id="notes" name="notes" th:field="*{notes}" class="form-textarea" placeholder="Add any additional notes about this bus"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Save Bus
+                        </button>
+                        <a href="/operations/buses" class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>
+

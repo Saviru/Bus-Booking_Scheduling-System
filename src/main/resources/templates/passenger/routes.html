@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Routes - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/passenger.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/passenger" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/bookings" class="nav-link">My Bookings</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/bookings/new" class="nav-link">Book Ticket</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Search Routes</span></h1>
+                <p>Find your perfect journey</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="search-section glassify">
+                <form action="/passenger/routes" method="get" class="search-form">
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label for="search"><i class="fas fa-search"></i> Search Routes</label>
+                        <input type="text" name="search" id="search" th:value="${search}" 
+                               class="search-input" placeholder="Enter origin or destination">
+                    </div>
+                    <button type="submit" class="btn-primary glassify" style="margin-top: 28px;">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </form>
+            </div>
+
+            <div class="section-header" style="margin-top: 40px;">
+                <span class="section-tag">Available Routes</span>
+                <h2>Choose Your <span class="gradient-text">Destination</span></h2>
+            </div>
+
+            <div class="passenger-table-container">
+                <table class="passenger-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> Route ID</th>
+                            <th><i class="fas fa-map-marker-alt"></i> Origin</th>
+                            <th><i class="fas fa-flag-checkered"></i> Destination</th>
+                            <th><i class="fas fa-map-signs"></i> Stops</th>
+                            <th><i class="fas fa-road"></i> Distance (km)</th>
+                            <th><i class="fas fa-clock"></i> Duration (min)</th>
+                            <th><i class="fas fa-info-circle"></i> Status</th>
+                            <th><i class="fas fa-eye"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="route : ${routes}">
+                            <td th:text="${route.id}"></td>
+                            <td th:text="${route.origin}"></td>
+                            <td th:text="${route.destination}"></td>
+                            <td th:text="${route.stops}"></td>
+                            <td th:text="${route.distance}"></td>
+                            <td th:text="${route.duration}"></td>
+                            <td>
+                                <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(route.status)}" th:text="${route.status}"></span>
+                            </td>
+                            <td>
+                                <a th:href="@{/passenger/routes/{id}/details(id=${route.id})}" class="action-btn btn-view">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="page-actions" style="margin-top: 30px;">
+                <a href="/passenger/bookings/new" class="btn-primary glassify">
+                    <i class="fas fa-ticket-alt"></i> Book a Ticket
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

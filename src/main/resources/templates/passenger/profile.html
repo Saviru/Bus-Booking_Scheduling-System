@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/passenger.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/passenger" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/bookings" class="nav-link">My Bookings</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/profile" class="nav-link">Profile</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">My Profile</span></h1>
+                <p>Manage your account information</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="page-actions">
+                <a href="/passenger/profile/edit" class="btn-primary glassify">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </a>
+                <a href="/passenger" class="btn-secondary glassify">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+
+            <div class="profile-info glassify">
+                <h2><i class="fas fa-user"></i> Personal Information</h2>
+                <table>
+                    <tr>
+                        <td><i class="fas fa-user-circle"></i> Name:</td>
+                        <td th:text="${user != null ? user.firstName + ' ' + user.lastName : 'N/A'}"></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-envelope"></i> Email:</td>
+                        <td th:text="${user != null ? user.email : 'N/A'}"></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-phone"></i> Phone:</td>
+                        <td th:text="${user != null ? user.phoneNumber : 'N/A'}"></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-info-circle"></i> Status:</td>
+                        <td>
+                            <span class="status-badge" th:if="${user != null}" 
+                                  th:classappend="'status-' + ${#strings.toLowerCase(user.status)}" 
+                                  th:text="${user.status}"></span>
+                            <span th:if="${user == null}">N/A</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="profile-info glassify" th:if="${profile != null}">
+                <h2><i class="fas fa-plane"></i> Travel Preferences</h2>
+                <table>
+                    <tr>
+                        <td><i class="fas fa-chair"></i> Preferred Seat Type:</td>
+                        <td th:text="${profile.preferredSeatType}"></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-map-marker-alt"></i> Frequent Destinations:</td>
+                        <td th:text="${profile.frequentDestinations}"></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-credit-card"></i> Payment Methods:</td>
+                        <td th:text="${profile.paymentMethods}"></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-wheelchair"></i> Accessibility Needs:</td>
+                        <td th:text="${profile.accessibilityNeeds}"></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-heart"></i> Travel Preferences:</td>
+                        <td th:text="${profile.travelPreferences}"></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-phone-square"></i> Emergency Contact:</td>
+                        <td th:text="${profile.emergencyContactName + ' - ' + profile.emergencyContactPhone}"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="detail-card glassify" th:if="${profile == null}">
+                <h3><i class="fas fa-exclamation-circle"></i> No Profile Information</h3>
+                <p>You haven't set up your travel preferences yet.</p>
+                <div style="margin-top: 20px;">
+                    <a href="/passenger/profile/edit" class="btn-primary glassify">
+                        <i class="fas fa-plus"></i> Create Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

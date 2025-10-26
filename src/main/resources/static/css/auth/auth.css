@@ -1,0 +1,109 @@
+html, body {
+    background: url('../index/bus.jpg') no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.473);
+}
+
+.auth-main {
+    max-height: 70vh;
+    width: 600px;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    padding: 1rem;
+    background: #00000054;
+}
+
+.reg-box {
+    overflow-y: scroll;
+}
+
+.reg-box::-webkit-scrollbar-track {
+    background: transparent;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 5px;
+}
+
+.reg-box::-webkit-scrollbar-thumb {
+    background: #979797;
+    border-radius: 10px;
+}
+
+.reg-box::-webkit-scrollbar-thumb:hover {
+    background: #e3e3e3;
+}
+
+.auth-header {
+    text-align: center;
+    margin: 1.5rem 0 1rem 0;
+}
+
+.auth-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+}
+
+.auth-header p {
+    color: #f0f0f0e5;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.form-group input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #f0f0f0e5;
+    border-radius: 5px;
+    background: transparent;
+    color: #f0f0f0e5;
+    font-size: 1rem;
+    backdrop-filter: blur(10px);
+    background: #eeeeee2a;
+}
+
+.form-group input::placeholder {
+    color: #f0f0f0e5;
+}
+
+.active {
+    padding: 0.75rem;
+    border: none;
+    border-radius: 20px;
+    background: #0000003d;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+}

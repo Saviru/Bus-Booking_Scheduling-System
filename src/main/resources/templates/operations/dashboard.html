@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operations Dashboard - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/operations.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .btn-primary, .btn-secondary {
+            margin: 10px;
+        }   
+    </style>
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/operations" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/buses" class="nav-link">Buses</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/routes" class="nav-link">Routes</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/operations/schedules" class="nav-link">Schedules</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 40vh; padding: 120px 20px 60px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Operations Dashboard</span></h1>
+                <p>Manage buses, routes, and schedules efficiently</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 60px 20px;">
+        <div class="container">
+            <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                    <h3>Bus Management</h3>
+                    <p>View and manage all buses in your fleet</p>
+                    <div class="card-actions">
+                        <a href="/operations/buses" class="btn-primary glassify">
+                            <i class="fas fa-list"></i> View All Buses
+                        </a>
+                        <a href="/operations/buses/new" class="btn-secondary glassify">
+                            <i class="fas fa-plus"></i> Add New Bus
+                        </a>
+                    </div>
+                </div>
+
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h3>Route Management</h3>
+                    <p>Create and manage bus routes</p>
+                    <div class="card-actions">
+                        <a href="/operations/routes" class="btn-primary glassify">
+                            <i class="fas fa-list"></i> View All Routes
+                        </a>
+                        <a href="/operations/routes/new" class="btn-secondary glassify">
+                            <i class="fas fa-plus"></i> Add New Route
+                        </a>
+                    </div>
+                </div>
+
+                <div class="feature-card glassify featuresAnim">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Schedule Management</h3>
+                    <p>Organize and track bus schedules</p>
+                    <div class="card-actions">
+                        <a href="/operations/schedules" class="btn-primary glassify">
+                            <i class="fas fa-list"></i> View All Schedules
+                        </a>
+                        <a href="/operations/schedules/new" class="btn-secondary glassify">
+                            <i class="fas fa-plus"></i> Create New Schedule
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header" style="margin-top: 80px;">
+                <span class="section-tag">Quick Access</span>
+                <h2>Filter & <span class="gradient-text">Search</span></h2>
+            </div>
+
+            <div class="stats-grid" style="margin-top: 40px;">
+                <div class="feature-card glassify featuresAnim">
+                    <h3><i class="fas fa-check-circle" style="color: #4ade80;"></i> Active Routes</h3>
+                    <a href="/operations/routes?status=ACTIVE" class="btn-secondary glassify filter-btn">
+                        View Active
+                    </a>
+                </div>
+                <div class="feature-card glassify featuresAnim">
+                    <h3><i class="fas fa-times-circle" style="color: #fb923c;"></i> Inactive Routes</h3>
+                    <a href="/operations/routes?status=INACTIVE" class="btn-secondary glassify filter-btn">
+                        View Inactive
+                    </a>
+                </div>
+                <div class="feature-card glassify featuresAnim">
+                    <h3><i class="fas fa-calendar-check" style="color: #4ade80;"></i> Active Schedules</h3>
+                    <a href="/operations/schedules?status=ACTIVE" class="btn-secondary glassify filter-btn">
+                        View Active
+                    </a>
+                </div>
+                <div class="feature-card glassify featuresAnim">
+                    <h3><i class="fas fa-ban" style="color: #ef4444;"></i> Cancelled Schedules</h3>
+                    <a href="/operations/schedules?status=CANCELLED" class="btn-secondary glassify filter-btn">
+                        View Cancelled
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

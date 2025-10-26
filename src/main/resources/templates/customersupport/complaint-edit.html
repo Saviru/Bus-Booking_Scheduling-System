@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Complaint - EZBus Support</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/customersupport.css}">>
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus Support</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport/complaints" class="nav-link active">Complaints</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/customersupport/feedbacks" class="nav-link">Feedbacks</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 25vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Edit Complaint</span></h1>
+                <p>Update complaint information</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container glassify">
+                <form th:action="@{/customersupport/complaints/{id}/edit(id=${complaint.id})}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="title"><i class="fas fa-heading"></i> Subject</label>
+                            <input type="text" id="title" name="title"
+                                   th:value="${complaint.subject}" required>
+                        </div>
+
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="description"><i class="fas fa-align-left"></i> Description</label>
+                            <textarea id="description" name="description"
+                                      rows="4" required th:text="${complaint.description}"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category"><i class="fas fa-tag"></i> Category</label>
+                            <select id="category" name="category" required>
+                                <option value="SERVICE" th:selected="${complaint.category == 'SERVICE'}">Service</option>
+                                <option value="BOOKING" th:selected="${complaint.category == 'BOOKING'}">Booking</option>
+                                <option value="PAYMENT" th:selected="${complaint.category == 'PAYMENT'}">Payment</option>
+                                <option value="DRIVER" th:selected="${complaint.category == 'DRIVER'}">Driver</option>
+                                <option value="VEHICLE" th:selected="${complaint.category == 'VEHICLE'}">Vehicle</option>
+                                <option value="OTHER" th:selected="${complaint.category == 'OTHER'}">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="priority"><i class="fas fa-exclamation-triangle"></i> Priority</label>
+                            <select id="priority" name="priority" required>
+                                <option value="LOW" th:selected="${complaint.priority == 'LOW'}">Low</option>
+                                <option value="MEDIUM" th:selected="${complaint.priority == 'MEDIUM'}">Medium</option>
+                                <option value="HIGH" th:selected="${complaint.priority == 'HIGH'}">High</option>
+                                <option value="URGENT" th:selected="${complaint.priority == 'URGENT'}">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Update Complaint
+                        </button>
+                        <a  th:href="@{/customersupport/complaints/{id}(id=${complaint.id})}"
+                           class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>
+

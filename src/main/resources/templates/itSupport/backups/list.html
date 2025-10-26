@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup Management - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/itsupport.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport/users" class="nav-link">Users</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport/backups" class="nav-link">Backups</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 35vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Backup & Restore Management</span></h1>
+                <p>Manage database backups and restore operations</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div th:if="${successMessage}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i> <span th:text="${successMessage}"></span>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i> <span th:text="${errorMessage}"></span>
+            </div>
+
+            <!-- Database Backup Section -->
+            <div class="glassify featuresAnim" style="padding: 30px; margin-bottom: 30px;">
+                <h2 style="margin-top: 0;"><i class="fas fa-database"></i> Database Backup</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Generate a complete SQL backup of the database with all tables and data.</p>
+                <a href="/itsupport/backups/generate" class="btn-primary glassify"
+                   onclick="return confirm('Generate database backup? This may take a few moments.')">
+                    <i class="fas fa-download"></i> Generate SQL Backup
+                </a>
+            </div>
+
+            <!-- Backup Files List -->
+            <h2 style="margin-bottom: 20px;"><i class="fas fa-file-archive"></i> Available Backup Files</h2>
+
+            <div class="itsupport-table-container glassify featuresAnim" th:if="${backupFiles != null and backupFiles.size() gt 0}">
+                <table class="itsupport-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-file"></i> File Name</th>
+                            <th><i class="fas fa-hdd"></i> File Size (KB)</th>
+                            <th><i class="fas fa-cog"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="file : ${backupFiles}">
+                            <td><strong th:text="${file.name}">backup.sql</strong></td>
+                            <td th:text="${file.size / 1024}">0</td>
+                            <td>
+                                <div class="action-btns-wrapper">
+                                    <a th:href="@{/itsupport/backups/download/{name}(name=${file.name})}"
+                                       class="action-btn btn-edit">
+                                        <i class="fas fa-download"></i> Download
+                                    </a>
+                                    <a th:href="@{/itsupport/backups/delete-file/{name}(name=${file.name})}"
+                                       class="action-btn btn-delete"
+                                       onclick="return confirm('Delete this backup file?')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${backupFiles == null or backupFiles.size() eq 0}" class="glassify featuresAnim" style="padding: 40px; text-align: center; color: var(--text-secondary);">
+                <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 20px; display: block;"></i>
+                <p>No backup files available. Click "Generate SQL Backup" to create one.</p>
+            </div>
+
+            <hr style="margin: 50px 0; border: 1px solid rgba(255,255,255,0.1);">
+
+            <div class="page-actions">
+                <a href="/itsupport/backups/create" class="btn-primary glassify">
+                    <i class="fas fa-plus"></i> Create New Backup Configuration
+                </a>
+            </div>
+
+            <!-- Filter Forms -->
+            <h2 style="margin: 40px 0 20px;"><i class="fas fa-filter"></i> Filter Backup Configurations</h2>
+
+            <div class="filter-section glassify featuresAnim">
+                <div class="filter-grid">
+                    <form action="/itsupport/backups" method="get" class="filter-item">
+                        <label><i class="fas fa-info-circle"></i> Status:</label>
+                        <select name="status" class="filter-select">
+                            <option value="">All Status</option>
+                            <option value="ACTIVE">Active</option>
+                            <option value="INACTIVE">Inactive</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="FAILED">Failed</option>
+                        </select>
+                        <button type="submit" class="filter-btn glassify">Filter</button>
+                    </form>
+
+                    <form action="/itsupport/backups" method="get" class="filter-item">
+                        <label><i class="fas fa-tag"></i> Type:</label>
+                        <select name="type" class="filter-select">
+                            <option value="">All Types</option>
+                            <option value="FULL">Full Backup</option>
+                            <option value="INCREMENTAL">Incremental</option>
+                            <option value="DIFFERENTIAL">Differential</option>
+                        </select>
+                        <button type="submit" class="filter-btn glassify">Filter</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Backup Configurations Table -->
+            <h2 style="margin: 40px 0 20px;"><i class="fas fa-cogs"></i> Backup Configurations</h2>
+
+            <div class="itsupport-table-container glassify featuresAnim" th:if="${backups != null and backups.size() gt 0}">
+                <table class="itsupport-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-tag"></i> Backup Name</th>
+                            <th><i class="fas fa-database"></i> Type</th>
+                            <th><i class="fas fa-calendar-alt"></i> Schedule</th>
+                            <th><i class="fas fa-clock"></i> Retention Policy</th>
+                            <th><i class="fas fa-info-circle"></i> Status</th>
+                            <th><i class="fas fa-calendar-plus"></i> Created Date</th>
+                            <th><i class="fas fa-calendar-check"></i> Last Backup</th>
+                            <th><i class="fas fa-cog"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="backup : ${backups}">
+                            <td th:text="${backup.id}">1</td>
+                            <td><strong th:text="${backup.backupName}">Name</strong></td>
+                            <td th:text="${backup.backupType}">Type</td>
+                            <td th:text="${backup.schedule}">Schedule</td>
+                            <td th:text="${backup.retentionPolicy}">Policy</td>
+                            <td>
+                                <span th:class="${'status-badge status-' + backup.status.toLowerCase()}" th:text="${backup.status}">Status</span>
+                            </td>
+                            <td th:text="${backup.createdDate}">Date</td>
+                            <td>
+                                <span th:if="${backup.lastBackupDate != null}" th:text="${backup.lastBackupDate}">Date</span>
+                                <span th:if="${backup.lastBackupDate == null}" style="color: var(--text-secondary);">Never</span>
+                            </td>
+                            <td>
+                                <div class="action-btns-wrapper">
+                                    <a th:href="@{/itsupport/backups/view/{id}(id=${backup.id})}" class="action-btn btn-edit">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <a th:href="@{/itsupport/backups/edit/{id}(id=${backup.id})}" class="action-btn btn-edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a th:href="@{/itsupport/backups/delete/{id}(id=${backup.id})}"
+                                       class="action-btn btn-delete"
+                                       onclick="return confirm('Delete this configuration?')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${backups == null or backups.size() eq 0}" class="glassify featuresAnim" style="padding: 40px; text-align: center; color: var(--text-secondary);">
+                <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 20px; display: block;"></i>
+                <p>No backup configurations found. Create a new configuration to get started.</p>
+            </div>
+
+            <hr style="margin: 50px 0; border: 1px solid rgba(255,255,255,0.1);">
+
+            <div class="page-actions">
+                <a href="/itsupport" class="btn-secondary glassify">
+                    <i class="fas fa-arrow-left"></i> Back to IT Support Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Details - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/passenger.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/passenger" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/complaints" class="nav-link">My Complaints</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/feedbacks" class="nav-link">My Feedbacks</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Complaint Details</span></h1>
+                <p>View and manage your complaint</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="page-actions">
+                <a th:if="${complaint.status == 'PENDING'}" 
+                   th:href="@{/passenger/complaints/{id}/edit(id=${complaint.id})}"
+                   class="btn-primary glassify">
+                    <i class="fas fa-edit"></i> Edit Complaint
+                </a>
+                <form th:if="${complaint.status == 'PENDING'}"
+                      th:action="@{/passenger/complaints/{id}/delete(id=${complaint.id})}"
+                      method="post" style="display: inline;"
+                      onsubmit="return confirm('Are you sure you want to delete this complaint?')">
+                    <button type="submit" class="btn-danger glassify">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </form>
+                <a href="/passenger/complaints" class="btn-secondary glassify">
+                    <i class="fas fa-arrow-left"></i> Back to Complaints
+                </a>
+            </div>
+
+            <div class="detail-card glassify">
+                <h2><i class="fas fa-exclamation-circle"></i> Complaint Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-hashtag"></i> ID</span>
+                        <span class="info-value" th:text="${complaint.id}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-heading"></i> Subject</span>
+                        <span class="info-value" th:text="${complaint.subject}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-tag"></i> Category</span>
+                        <span class="info-value" th:text="${complaint.category}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-exclamation-triangle"></i> Priority</span>
+                        <span class="info-value" th:text="${complaint.priority}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-info-circle"></i> Status</span>
+                        <span class="status-badge" 
+                              th:classappend="'status-' + ${#strings.toLowerCase(complaint.status)}" 
+                              th:text="${complaint.status}"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-calendar"></i> Created Date</span>
+                        <span class="info-value" th:text="${complaint.createdDate}"></span>
+                    </div>
+                    <div class="info-item" style="grid-column: 1 / -1;">
+                        <span class="info-label"><i class="fas fa-align-left"></i> Description</span>
+                        <span class="info-value" th:text="${complaint.description}"></span>
+                    </div>
+                    <div class="info-item" style="grid-column: 1 / -1;" th:if="${complaint.resolution}">
+                        <span class="info-label"><i class="fas fa-check-circle"></i> Resolution</span>
+                        <span class="info-value" th:text="${complaint.resolution}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-card glassify">
+                <h2><i class="fas fa-comments"></i> Customer Support Responses</h2>
+                <div th:if="${responses != null and not #lists.isEmpty(responses)}">
+                    <div th:each="response : ${responses}" class="response-card glassify" style="margin-bottom: 20px; padding: 20px;">
+                        <div style="margin-bottom: 10px;">
+                            <strong style="color: var(--accent-primary);"><i class="fas fa-reply"></i> Response from Customer Support</strong>
+                            <p style="margin-top: 10px;" th:text="${response.responseMessage}"></p>
+                        </div>
+                        <div style="display: flex; gap: 20px; font-size: 0.9em; opacity: 0.7;">
+                            <span><i class="fas fa-calendar"></i> <span th:text="${response.createdDate}"></span></span>
+                            <span><i class="fas fa-info-circle"></i> <span th:text="${response.status}"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${responses == null or #lists.isEmpty(responses)}" style="opacity: 0.7; padding: 20px; text-align: center;">
+                    <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 10px; opacity: 0.5;"></i>
+                    <p>No responses yet. Our customer support team will respond to your complaint soon.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>
+
+

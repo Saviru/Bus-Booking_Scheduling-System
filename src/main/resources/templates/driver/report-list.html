@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Condition Reports - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/driver.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/driver" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/driver/triplogs" class="nav-link">Trip Logs</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/driver/reports" class="nav-link">Vehicle Reports</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Vehicle Condition Reports</span></h1>
+                <p>Welcome, <span th:text="${userName}">Driver</span>!</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="page-actions">
+                <a href="/driver/reports/new" class="btn-primary glassify">
+                    <i class="fas fa-plus"></i> Submit New Vehicle Report
+                </a>
+                <a href="/driver" class="btn-secondary glassify">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+
+            <div class="driver-table-container">
+                <table class="driver-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-bus"></i> Vehicle Number</th>
+                            <th><i class="fas fa-car-crash"></i> Brakes</th>
+                            <th><i class="fas fa-lightbulb"></i> Lights</th>
+                            <th><i class="fas fa-circle"></i> Tires</th>
+                            <th><i class="fas fa-cog"></i> Engine</th>
+                            <th><i class="fas fa-check-circle"></i> Overall Status</th>
+                            <th><i class="fas fa-calendar-day"></i> Created Date</th>
+                            <th><i class="fas fa-tools"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="report : ${reports}">
+                            <td th:text="${report.id}"></td>
+                            <td th:text="${report.vehicleNumber}"></td>
+                            <td th:text="${report.brakesCondition}"></td>
+                            <td th:text="${report.lightsCondition}"></td>
+                            <td th:text="${report.tiresCondition}"></td>
+                            <td th:text="${report.engineCondition}"></td>
+                            <td th:text="${report.overallStatus}"></td>
+                            <td th:text="${report.createdDate}"></td>
+                            <td>
+                                <a th:href="@{'/driver/reports/edit/' + ${report.id}}" class="action-btn btn-edit">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a th:href="@{'/driver/reports/delete/' + ${report.id}}" 
+                                   class="action-btn btn-delete" 
+                                   onclick="return confirm('Are you sure you want to delete this report?')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

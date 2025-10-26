@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/itsupport.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport/users" class="nav-link">Users</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/itsupport/backups" class="nav-link">Backups</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Edit User</span></h1>
+                <p>Update user information and access levels</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="form-container glassify featuresAnim">
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> <span th:text="${errorMessage}"></span>
+                </div>
+
+                <form th:action="@{/itsupport/users/edit/{id}(id=${user.id})}" th:object="${user}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="email"><i class="fas fa-envelope"></i>Email *</label>
+                            <input type="email" id="email" name="email" th:field="*{email}" class="form-input" placeholder="Enter email address" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password"><i class="fas fa-lock"></i>Password *</label>
+                            <input type="password" id="password" name="password" th:field="*{password}" class="form-input" placeholder="Enter password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstName"><i class="fas fa-user"></i>First Name *</label>
+                            <input type="text" id="firstName" name="firstName" th:field="*{firstName}" class="form-input" placeholder="Enter first name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName"><i class="fas fa-user"></i>Last Name *</label>
+                            <input type="text" id="lastName" name="lastName" th:field="*{lastName}" class="form-input" placeholder="Enter last name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phoneNumber"><i class="fas fa-phone"></i>Phone Number *</label>
+                            <input type="text" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" class="form-input" placeholder="Enter phone number" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="role"><i class="fas fa-user-tag"></i>Role *</label>
+                            <select id="role" name="role" th:field="*{role}" class="form-select" required>
+                                <option value="IT_SUPPORT">IT Support</option>
+                                <option value="OPERATION_MANAGER">Operation Manager</option>
+                                <option value="CUSTOMER_SUPPORT">Customer Support Officer</option>
+                                <option value="TICKETING_OFFICER">Ticketing Officer</option>
+                                <option value="DRIVER">Driver</option>
+                                <option value="PASSENGER">Passenger</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="status"><i class="fas fa-info-circle"></i>Status *</label>
+                            <select id="status" name="status" th:field="*{status}" class="form-select" required>
+                                <option value="ACTIVE">Active</option>
+                                <option value="INACTIVE">Inactive</option>
+                                <option value="SUSPENDED">Suspended</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-save"></i> Update User
+                        </button>
+                        <button type="reset" class="btn-secondary glassify">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                        <a href="/itsupport/users" class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

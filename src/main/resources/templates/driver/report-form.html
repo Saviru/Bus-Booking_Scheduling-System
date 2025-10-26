@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Vehicle Report - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/driver.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/driver" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/driver/triplogs" class="nav-link">Trip Logs</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/driver/reports" class="nav-link">Vehicle Reports</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Submit Vehicle Report</span></h1>
+                <p>Welcome, <span th:text="${userName}">Driver</span>!</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <!-- Display Assigned Bus Information -->
+            <div class="bus-info glassify" th:if="${assignedBus}">
+                <h3><i class="fas fa-bus"></i> Your Assigned Bus</h3>
+                <p><strong>Bus Number:</strong> <span th:text="${assignedBus.busNumber}"></span></p>
+                <p><strong>Registration:</strong> <span th:text="${assignedBus.registrationNumber}"></span></p>
+                <p><strong>Type:</strong> <span th:text="${assignedBus.busType}"></span></p>
+                <p><strong>Status:</strong> <span th:text="${assignedBus.status}"></span></p>
+            </div>
+
+            <div class="form-container glassify">
+                <form th:action="@{/driver/reports}" th:object="${report}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="vehicleNumber">
+                                <i class="fas fa-id-card"></i> Vehicle Number
+                            </label>
+                            <input type="text" th:field="*{vehicleNumber}" id="vehicleNumber"
+                                   class="form-input"
+                                   th:value="${assignedBus != null ? assignedBus.registrationNumber : ''}"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="brakesCondition">
+                                <i class="fas fa-car-crash"></i> Brakes Condition
+                            </label>
+                            <select th:field="*{brakesCondition}" id="brakesCondition" class="form-select" required>
+                                <option value="">Select Condition</option>
+                                <option value="EXCELLENT">Excellent</option>
+                                <option value="GOOD">Good</option>
+                                <option value="FAIR">Fair</option>
+                                <option value="POOR">Poor</option>
+                                <option value="NEEDS_REPAIR">Needs Repair</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lightsCondition">
+                                <i class="fas fa-lightbulb"></i> Lights Condition
+                            </label>
+                            <select th:field="*{lightsCondition}" id="lightsCondition" class="form-select" required>
+                                <option value="">Select Condition</option>
+                                <option value="EXCELLENT">Excellent</option>
+                                <option value="GOOD">Good</option>
+                                <option value="FAIR">Fair</option>
+                                <option value="POOR">Poor</option>
+                                <option value="NEEDS_REPAIR">Needs Repair</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tiresCondition">
+                                <i class="fas fa-circle"></i> Tires Condition
+                            </label>
+                            <select th:field="*{tiresCondition}" id="tiresCondition" class="form-select" required>
+                                <option value="">Select Condition</option>
+                                <option value="EXCELLENT">Excellent</option>
+                                <option value="GOOD">Good</option>
+                                <option value="FAIR">Fair</option>
+                                <option value="POOR">Poor</option>
+                                <option value="NEEDS_REPAIR">Needs Repair</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="engineCondition">
+                                <i class="fas fa-cog"></i> Engine Condition
+                            </label>
+                            <select th:field="*{engineCondition}" id="engineCondition" class="form-select" required>
+                                <option value="">Select Condition</option>
+                                <option value="EXCELLENT">Excellent</option>
+                                <option value="GOOD">Good</option>
+                                <option value="FAIR">Fair</option>
+                                <option value="POOR">Poor</option>
+                                <option value="NEEDS_REPAIR">Needs Repair</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="otherIssues">
+                                <i class="fas fa-exclamation-triangle"></i> Other Issues
+                            </label>
+                            <textarea th:field="*{otherIssues}" id="otherIssues" class="form-textarea"
+                                      placeholder="Describe any other issues or concerns..."></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="overallStatus">
+                                <i class="fas fa-check-circle"></i> Overall Status
+                            </label>
+                            <select th:field="*{overallStatus}" id="overallStatus" class="form-select" required>
+                                <option value="">Select Status</option>
+                                <option value="ROADWORTHY">Roadworthy</option>
+                                <option value="MINOR_ISSUES">Minor Issues</option>
+                                <option value="MAJOR_ISSUES">Major Issues</option>
+                                <option value="OUT_OF_SERVICE">Out of Service</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary glassify">
+                            <i class="fas fa-paper-plane"></i> Submit Report
+                        </button>
+                        <a href="/driver/reports" class="btn-secondary glassify">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

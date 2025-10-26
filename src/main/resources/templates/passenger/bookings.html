@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - EZBus</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/passenger.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-bus"></i>
+                    <span>EZBus</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/passenger" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/bookings" class="nav-link">My Bookings</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/routes" class="nav-link">Routes</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/passenger/profile" class="nav-link">Profile</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 30vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">My Bookings</span></h1>
+                <p>Manage your ticket reservations</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div class="page-actions">
+                <a href="/passenger/bookings/new" class="btn-primary glassify">
+                    <i class="fas fa-plus"></i> Book New Ticket
+                </a>
+                <a href="/passenger" class="btn-secondary glassify">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+
+            <div class="passenger-table-container">
+                <table class="passenger-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-calendar"></i> Travel Date</th>
+                            <th><i class="fas fa-chair"></i> Seat</th>
+                            <th><i class="fas fa-ticket-alt"></i> Type</th>
+                            <th><i class="fas fa-money-bill"></i> Fare</th>
+                            <th><i class="fas fa-percent"></i> Discount</th>
+                            <th><i class="fas fa-dollar-sign"></i> Final Amount</th>
+                            <th><i class="fas fa-info-circle"></i> Status</th>
+                            <th><i class="fas fa-comment"></i> Requests</th>
+                            <th><i class="fas fa-cog"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="booking : ${bookings}">
+                            <td th:text="${booking.id}"></td>
+                            <td th:text="${booking.travelDate}"></td>
+                            <td th:text="${booking.seatNumber}"></td>
+                            <td th:text="${booking.ticketType}"></td>
+                            <td th:text="'$' + ${booking.fareAmount}"></td>
+                            <td th:text="'$' + ${booking.discountApplied}"></td>
+                            <td th:text="'$' + ${booking.finalAmount}"></td>
+                            <td>
+                                <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(booking.status)}" th:text="${booking.status}"></span>
+                            </td>
+                            <td th:text="${booking.specialRequests}"></td>
+                            <td>
+                                <a th:if="${booking.status == 'BOOKED'}" 
+                                   th:href="@{/passenger/bookings/{id}/edit(id=${booking.id})}" 
+                                   class="action-btn btn-edit">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+
+                                <form th:if="${booking.status == 'BOOKED' or booking.status == 'CONFIRMED'}"
+                                      th:action="@{/passenger/bookings/{id}/cancel(id=${booking.id})}"
+                                      method="post" style="display: inline;">
+                                    <button type="submit" class="action-btn btn-cancel"
+                                            onclick="return confirm('Are you sure you want to cancel this booking?');">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </form>
+
+                                <span th:if="${booking.status == 'CANCELLED'}" style="color: var(--text-secondary);">-</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>

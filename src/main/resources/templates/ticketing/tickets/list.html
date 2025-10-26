@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Tickets - EZBus Ticketing</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/ticketing.css}">
+    <script src="https://cdn.jsdelivr.net/gh/Saviru/GlassiFy@1.0.0/glassify.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header glassify">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo navAnim">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>EZBus Ticketing</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing/tickets" class="nav-link active">Tickets</a>
+                    </li>
+                    <li class="nav-item navAnim">
+                        <a href="/ticketing/fares" class="nav-link">Fares</a>
+                    </li>
+                </ul>
+                <div class="nav-auth navAnim3">
+                    <button class="theme-toggle glassify" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="/" class="btn-login glassify navAnim">Home</a>
+                    <a href="/logout" class="btn-register glassify navAnim">Logout</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" style="min-height: 25vh; padding: 120px 20px 40px;">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1><span class="gradient-h1">Manage Passenger Tickets</span></h1>
+                <p>View and manage all tickets for your assigned buses</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="padding: 40px 20px 80px;">
+        <div class="container">
+            <div style="margin-bottom: 20px; text-align: right;">
+                <a href="/ticketing/tickets/new" class="btn-primary glassify">
+                    <i class="fas fa-plus"></i> Create New Ticket
+                </a>
+            </div>
+
+            <!-- Alert Messages -->
+            <div th:if="${successMessage}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${successMessage}"></span>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${errorMessage}"></span>
+            </div>
+
+            <!-- Tickets Table -->
+            <div class="table-wrapper glassify">
+                <h2><i class="fas fa-list"></i> Tickets for Your Assigned Buses</h2>
+                
+                <div th:if="${#lists.isEmpty(tickets)}" style="text-align: center; padding: 60px 20px;">
+                    <i class="fas fa-inbox" style="font-size: 64px; color: var(--text-secondary); margin-bottom: 20px;"></i>
+                    <h5 style="color: var(--text-secondary);">No tickets found</h5>
+                    <p style="color: var(--text-secondary);">There are no tickets for your assigned buses yet.</p>
+                    <a href="/ticketing/tickets/new" class="btn-primary glassify">Create First Ticket</a>
+                </div>
+
+                <div th:if="${!#lists.isEmpty(tickets)}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ticket ID</th>
+                                <th>Passenger</th>
+                                <th>Route</th>
+                                <th>Travel Date</th>
+                                <th>Seat</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ticket : ${tickets}">
+                                <td>
+                                    <strong th:text="${ticket.id}"></strong>
+                                </td>
+                                <td>
+                                    <span th:text="'ID: ' + ${ticket.passengerId}"></span>
+                                </td>
+                                <td>
+                                    <span th:text="'Route ' + ${ticket.routeId}"></span>
+                                </td>
+                                <td>
+                                    <span th:text="${#temporals.format(ticket.travelDate, 'MMM dd, yyyy HH:mm')}"></span>
+                                </td>
+                                <td>
+                                    <span class="status-badge" th:text="${ticket.seatNumber}"></span>
+                                </td>
+                                <td>
+                                    <span class="status-badge" th:text="${ticket.ticketType}"></span>
+                                </td>
+                                <td>
+                                    <strong th:text="'$' + ${#numbers.formatDecimal(ticket.finalAmount, 1, 2)}"></strong>
+                                </td>
+                                <td>
+                                    <span class="status-badge"
+                                          th:classappend="${ticket.status == 'CONFIRMED'} ? 'status-confirmed' :
+                                                         (${ticket.status == 'CANCELLED'} ? 'status-cancelled' : 'status-booked')"
+                                          th:text="${ticket.status}"></span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/ticketing/tickets/{id}/edit(id=${ticket.id})}"
+                                       class="btn-warning btn-sm" title="Edit Ticket">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:if="${ticket.status != 'CONFIRMED'}"
+                                       th:href="@{/ticketing/tickets/{id}/confirm(id=${ticket.id})}"
+                                       class="btn-success btn-sm" title="Confirm Ticket">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                    <a th:if="${ticket.status != 'CANCELLED'}"
+                                       th:href="@{/ticketing/tickets/{id}/cancel(id=${ticket.id})}"
+                                       class="btn-danger btn-sm" title="Cancel Ticket"
+                                       onclick="return confirm('Are you sure you want to cancel this ticket?')">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div th:if="${!#lists.isEmpty(tickets)}" class="summary-cards">
+                <div class="summary-card">
+                    <i class="fas fa-ticket-alt" style="color: var(--accent-primary);"></i>
+                    <h6>Total Tickets</h6>
+                    <h3 th:text="${#lists.size(tickets)}"></h3>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                    <h6>Confirmed</h6>
+                    <h3 th:text="${#lists.size(#lists.toList(tickets.?[status == 'CONFIRMED']))}"></h3>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-clock" style="color: #ffc107;"></i>
+                    <h6>Pending</h6>
+                    <h3 th:text="${#lists.size(#lists.toList(tickets.?[status == 'BOOKED']))}"></h3>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-times-circle" style="color: #f44336;"></i>
+                    <h6>Cancelled</h6>
+                    <h3 th:text="${#lists.size(#lists.toList(tickets.?[status == 'CANCELLED']))}"></h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bus"></i>
+                        <span>EZBus</span>
+                    </div>
+                    <p>Your Smart Travel Companion</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <glassi-fy octaves="100"></glassi-fy>
+    <script th:src="@{/css/index/script.js}"></script>
+</body>
+</html>
+
